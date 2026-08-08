@@ -1,16 +1,48 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
-import LanguageDetector from "i18next-browser-languagedetector";
 
 export const defaultResources = {
   en: {
     translation: {
+      hero: {
+        titlePrefix: "HH GOA",
+        titleYear: "2026",
+        description:
+          "The official builder credential for the 2026 gathering on the Konkan coast. Claim your identity, carry the sunset, and show up already belonging.",
+        cta: "Build your pass",
+      },
+      header: {
+        title: "HH GOA",
+        year: "2026",
+      },
+      notes: {
+        note1Title: "Rendered on device",
+        note1Desc: "Your photo never leaves the browser. No upload, no account, no queue.",
+        note2Title: "1080 × 1350 artwork",
+        note2Desc: "Print-grade PNG sized for the X timeline, stories and profile grids.",
+        note3Title: "iPhone HEIC ready",
+        note3Desc: "Drop any crop or format — the pass frames the portrait for you.",
+      },
+      footer: {
+        title: "HH GOA",
+        year: "2026",
+        subtitle: "The official builder pass",
+        hashtag: "#FrameInGoa",
+        copyright: "HH-GOA-2026 ©",
+      },
+      system: {
+        notFoundTitle: "404",
+        notFoundHeading: "Page not found",
+        notFoundMessage: "The page you're looking for doesn't exist or has been moved.",
+        errorHeading: "This page didn't load",
+        errorMessage: "Something went wrong on our end. You can try refreshing or head back home.",
+        tryAgain: "Try again",
+        goHome: "Go home",
+      },
       studio: {
         eyebrow: "Builder credential",
         titlePrefix: "Craft your",
         titleHighlight: "identity.",
-        description:
-          "One portrait, two fields, and a pass that looks like the sun going down over Anjuna. Rendered live in your browser, ready for the timeline.",
         step1: "Upload identity",
         step2: "Personal details",
         step3: "Issue & share",
@@ -35,16 +67,17 @@ export const defaultResources = {
 };
 
 if (!i18n.isInitialized) {
-  i18n
-    .use(LanguageDetector)
-    .use(initReactI18next)
-    .init({
-      resources: defaultResources,
-      fallbackLng: "en",
-      interpolation: {
-        escapeValue: false,
-      },
-    });
+  void i18n.use(initReactI18next).init({
+    resources: defaultResources,
+    lng: "en",
+    fallbackLng: "en",
+    react: {
+      useSuspense: false,
+    },
+    interpolation: {
+      escapeValue: false,
+    },
+  });
 }
 
 export default i18n;

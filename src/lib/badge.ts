@@ -212,9 +212,6 @@ export function renderBadge(canvas: HTMLCanvasElement, d: BadgeData, scale = 1) 
   ctx.fillStyle = MAGENTA;
   ctx.font = SERIF(28, true);
   ctx.fillText("#FrameInGoa", ix + iw + 1, baseline + 12);
-  ctx.fillStyle = "rgba(248,249,250,0.5)";
-  ctx.font = SANS(13, 600);
-  letterSpaced(ctx, d.id, ix + iw, baseline - 42, 4, "right");
   ctx.textAlign = "left";
 
   ctx.restore();

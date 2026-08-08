@@ -15,23 +15,30 @@ export function Reveal({
   as?: "div" | "section" | "li" | "header" | "footer";
 }) {
   const ref = useRef<HTMLElement | null>(null);
-  const [shown, setShown] = useState(false);
-  // Content already on screen at mount must not wait for the observer callback.
-  const [immediate, setImmediate] = useState(false);
+  // Default to shown=true so text renders immediately on initial paint without waiting for JS observer.
+  const [shown, setShown] = useState(true);
+  const [immediate, setImmediate] = useState(true);
 
   useIsomorphicLayoutEffect(() => {
     const el = ref.current;
     if (!el) return;
 
+    if (typeof IntersectionObserver === "undefined") {
+      setShown(true);
+      return;
+    }
+
     const rect = el.getBoundingClientRect();
-    const inView = rect.top < window.innerHeight && rect.bottom > 0;
+    const inView = rect.top < (window.innerHeight || 800) && rect.bottom > 0;
     if (inView) {
       setImmediate(true);
       setShown(true);
       return;
     }
 
-    if (typeof IntersectionObserver === "undefined") return setShown(true);
+    setImmediate(false);
+    setShown(false);
+
     const io = new IntersectionObserver(
       (entries) => {
         if (entries.some((e) => e.isIntersecting)) {
@@ -39,8 +46,7 @@ export function Reveal({
           io.disconnect();
         }
       },
-
-      { rootMargin: "0px 0px -12% 0px", threshold: 0.08 },
+      { rootMargin: "0px 0px -10% 0px", threshold: 0.05 },
     );
     io.observe(el);
     return () => io.disconnect();

@@ -16,26 +16,26 @@ export function GoaBackdrop() {
 
       {/* film grain */}
       <div
-        className="absolute inset-0 opacity-[0.05] mix-blend-overlay"
+        className="absolute inset-0 opacity-[0.03] mix-blend-overlay"
         style={{
           backgroundImage:
             "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E\")",
         }}
       />
 
-      {/* dusk scrim keeps the editorial type legible over the scene */}
+      {/* lighter dusk scrim so the beach illustration pops vibrantly */}
       <div
         className="absolute inset-0"
         style={{
           background:
-            "linear-gradient(180deg, color-mix(in oklab, var(--ink) 72%, transparent) 0%, color-mix(in oklab, var(--ink) 58%, transparent) 45%, color-mix(in oklab, var(--ink) 80%, transparent) 100%)",
+            "linear-gradient(180deg, color-mix(in oklab, var(--ink) 35%, transparent) 0%, color-mix(in oklab, var(--ink) 20%, transparent) 45%, color-mix(in oklab, var(--ink) 45%, transparent) 100%)",
         }}
       />
       <div
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(120% 90% at 50% 30%, transparent 30%, color-mix(in oklab, var(--ink) 60%, transparent) 100%)",
+            "radial-gradient(120% 90% at 50% 30%, transparent 50%, color-mix(in oklab, var(--ink) 35%, transparent) 100%)",
         }}
       />
     </div>

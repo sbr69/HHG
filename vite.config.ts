@@ -7,8 +7,17 @@ import react from "@vitejs/plugin-react";
 export default defineConfig(async ({ command, mode }) => {
   // Mirror VITE_* env into import.meta.env.* so server-side code sees it too.
   const env: Record<string, string> = {};
-  for (const [key, value] of Object.entries(loadEnv(mode, process.cwd(), "VITE_"))) {
-    env[`import.meta.env.${key}`] = JSON.stringify(value);
+  const loaded = loadEnv(mode, process.cwd(), "VITE_");
+  for (const entry of Object.entries(loaded)) {
+    const safeKey = String(entry[0]).replace(/[^A-Za-z0-9_]/g, "");
+    if (safeKey) {
+      Object.defineProperty(env, `import.meta.env.${safeKey}`, {
+        value: JSON.stringify(entry[1]),
+        enumerable: true,
+        configurable: true,
+        writable: true,
+      });
+    }
   }
 
   const plugins = [

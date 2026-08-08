@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 import { Toaster } from "@/components/ui/sonner";
 import { GoaBackdrop } from "@/components/GoaBackdrop";
 import { BadgeStudio } from "@/components/BadgeStudio";
 import { Reveal } from "@/components/Reveal";
-import { BrandMarquee, CredentialNotes, SiteFooter, SiteHeader } from "@/components/SiteChrome";
+import { BrandMarquee, SiteFooter, SiteHeader } from "@/components/SiteChrome";
 
 const TITLE = "HH Goa 2026 — Official Builder Pass";
 const DESC =
@@ -42,6 +43,8 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const { t } = useTranslation();
+
   return (
     <>
       <GoaBackdrop />
@@ -52,25 +55,23 @@ function Index() {
         {/* hero */}
         <section className="mx-auto flex w-full max-w-7xl flex-col justify-end px-5 pb-14 pt-20 sm:px-8 md:pb-24 md:pt-32">
           <Reveal>
-            <h1 className="font-display text-[clamp(3.5rem,15vw,11rem)] italic leading-[0.84] tracking-tight">
-              HH GOA
+            <h1 className="font-display text-[clamp(3.5rem,15vw,11rem)] italic leading-[0.84] tracking-tight text-coffee drop-shadow-lg">
+              {t("hero.titlePrefix")}
               <br />
-              <span className="text-blaze">2026</span>
+              <span className="text-ember">{t("hero.titleYear")}</span>
             </h1>
           </Reveal>
           <Reveal delay={120}>
-            <div className="mt-10 flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
-              <p className="max-w-lg text-lg font-light leading-relaxed text-muted-foreground md:text-xl">
-                The official builder credential for the 2026 gathering on the Konkan coast. Claim
-                your identity, carry the sunset, and show up already belonging.
-              </p>
+            <div className="mt-10 flex flex-col gap-8 md:flex-row md:items-end md:justify-end">
               <a
                 href="#studio"
                 className="group inline-flex shrink-0 items-center gap-4"
                 aria-label="Scroll to the builder pass studio"
               >
-                <span className="h-px w-12 bg-foreground/30 transition-all duration-500 group-hover:w-24 group-hover:bg-[color:var(--ember)]" />
-                <span className="font-display text-2xl italic">Build your pass</span>
+                <span className="h-px w-12 bg-ember transition-all duration-500 group-hover:w-24 group-hover:bg-amber" />
+                <span className="font-display text-2xl italic text-amber transition-colors group-hover:text-amber-hover">
+                  {t("hero.cta")}
+                </span>
               </a>
             </div>
           </Reveal>
@@ -78,7 +79,6 @@ function Index() {
 
         <BrandMarquee />
         <BadgeStudio />
-        <CredentialNotes />
       </main>
 
       <SiteFooter />

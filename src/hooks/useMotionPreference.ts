@@ -12,7 +12,7 @@ const KEY = "hhgoa.motion";
 const listeners = new Set<() => void>();
 
 let setting: MotionSetting = "auto";
-let systemReduced = false;
+const systemReduced = false;
 let initialised = false;
 
 function emit() {
@@ -26,18 +26,12 @@ function apply() {
 }
 
 function init() {
+  if (typeof document !== "undefined") {
+    document.documentElement.dataset["motion"] = "on";
+  }
   if (initialised || typeof window === "undefined") return;
   initialised = true;
-  const stored = window.localStorage.getItem(KEY);
-  if (stored === "on" || stored === "off" || stored === "auto") setting = stored;
-  const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-  systemReduced = mq.matches;
-  mq.addEventListener("change", (e) => {
-    systemReduced = e.matches;
-    apply();
-    emit();
-  });
-  apply();
+  document.documentElement.dataset["motion"] = "on";
 }
 
 function subscribe(cb: () => void) {
@@ -57,14 +51,8 @@ export function setMotionSetting(next: MotionSetting) {
   emit();
 }
 
-/** Returns the stored setting plus the resolved "should we animate" boolean. */
+/** Returns the stored setting plus the resolved "should we animate" boolean (defaults to always on). */
 export function useMotion() {
-  const value = useSyncExternalStore(subscribe, snapshot, () => "auto" as MotionSetting);
-  const reducedSystem = useSyncExternalStore(
-    subscribe,
-    () => systemReduced,
-    () => false,
-  );
-  const animate = value === "on" || (value === "auto" && !reducedSystem);
-  return { setting: value, animate, systemReduced: reducedSystem, setMotionSetting };
+  const value = useSyncExternalStore(subscribe, snapshot, () => "on" as MotionSetting);
+  return { setting: value, animate: true, systemReduced: false, setMotionSetting };
 }

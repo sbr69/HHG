@@ -9,23 +9,27 @@ import {
 } from "@tanstack/react-router";
 import { type ReactNode } from "react";
 
+import "@/lib/i18n";
+import { useTranslation } from "react-i18next";
 import appCss from "../styles.css?url";
 
 function NotFoundComponent() {
+  const { t } = useTranslation();
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          The page you're looking for doesn't exist or has been moved.
-        </p>
+        <h1 className="text-7xl font-bold text-foreground">{t("system.notFoundTitle")}</h1>
+        <h2 className="mt-4 text-xl font-semibold text-foreground">
+          {t("system.notFoundHeading")}
+        </h2>
+        <p className="mt-2 text-sm text-muted-foreground">{t("system.notFoundMessage")}</p>
         <div className="mt-6">
           <Link
             to="/"
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
-            Go home
+            {t("system.goHome")}
           </Link>
         </div>
       </div>
@@ -36,16 +40,15 @@ function NotFoundComponent() {
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
   const router = useRouter();
+  const { t } = useTranslation();
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-xl font-semibold tracking-tight text-foreground">
-          This page didn't load
+          {t("system.errorHeading")}
         </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Something went wrong on our end. You can try refreshing or head back home.
-        </p>
+        <p className="mt-2 text-sm text-muted-foreground">{t("system.errorMessage")}</p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
             onClick={() => {
@@ -54,13 +57,13 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
             }}
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
-            Try again
+            {t("system.tryAgain")}
           </button>
           <a
             href="/"
             className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
           >
-            Go home
+            {t("system.goHome")}
           </a>
         </div>
       </div>
@@ -84,20 +87,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Work+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap",
+      },
       { rel: "preload", as: "image", href: "/goa-beach.webp" },
       { rel: "prefetch", as: "image", href: "/goa-frame.webp" },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
-    scripts: [
-      {
-        // Load Google Fonts without blocking first paint: text renders in a
-        // fallback face instantly, then swaps in Instrument Serif / Work Sans
-        // (&display=swap) the moment the stylesheet + font files arrive.
-        children:
-          "(function(){var l=document.createElement('link');l.rel='stylesheet';l.href='https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Work+Sans:ital,wght@0,300;0,400;0,600;1,400&display=swap';document.head.appendChild(l);})();",
-      },
-    ],
+    scripts: [],
   }),
 
   shellComponent: RootShell,

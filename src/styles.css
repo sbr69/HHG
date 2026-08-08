@@ -1,8 +1,4 @@
-@import "tailwindcss" source(none);
-@source "../src";
-@import "tw-animate-css";
-
-@custom-variant dark (&:is(.dark *));
+@import "tailwindcss";
 
 /*
  * HH GOA 2026 — "Sunset Blaze Editorial" design system.
@@ -10,7 +6,8 @@
  * with a locked ember → amber → magenta → violet accent ramp.
  */
 
-@theme inline {
+:root {
+  --radius: 1rem;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -18,97 +15,88 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
+
+  /* ---------- Palette 4: Retro Beach Sunset Multi-Color System ---------- */
+  --coffee: #fff9f2; /* Warm Glowing Ivory — Primary Titles */
+  --cocoa: #e8d5c4; /* Warm Sand — Body & Paragraph Text */
+  --ivory: #fff9f2; /* Soft Sun White */
+  --beige: #f7b32b; /* Radiant Sunset Gold — Step Numbers & Badges */
+  --mustard: #f7b32b; /* Mustard Gold */
+  --terracotta: #ff6b35; /* Terracotta Ember Orange — Accent Titles & Primary CTA */
+  --seafoam: #36c5c0; /* Seafoam Teal — Section Markers, Step Labels & Hashtags */
+  --olive: #4e7c38;
+  --olive-hover: #5f9545;
+
+  --ember: var(--terracotta);
+  --ember-hover: #ff8559;
+  --amber: var(--mustard);
+  --amber-hover: #ffc453;
+  --magenta: #e84393;
+  --violet: var(--seafoam);
+  --ink: #100a07;
+
+  --background: #100a07;
+  --foreground: var(--coffee); /* Primary Heading: Warm Glowing Ivory */
+  --text-heading: var(--coffee); /* Warm Ivory for Titles */
+  --text-body: var(--cocoa); /* Warm Sand for Body Text */
+  --text-caption: #c4ab97; /* Warm Sunset Taupe Caption */
+  --text-eyebrow: var(--seafoam); /* Seafoam Teal for Micro-Labels */
+  --card: rgba(26, 16, 11, 0.88); /* Rich Dark Espresso Card Surface */
+  --card-foreground: var(--ivory);
+  --popover: #1a100b;
+  --popover-foreground: var(--ivory);
+  --primary: var(--terracotta);
+  --primary-foreground: #ffffff;
+  --secondary: #2a1b12;
+  --secondary-foreground: var(--ivory);
+  --muted: #24170f;
+  --muted-foreground: #c4ab97;
+  --muted-subtle: #a38c7a;
+  --accent: var(--mustard);
+  --accent-foreground: var(--ink);
+  --destructive: #c0392b;
+  --destructive-foreground: var(--ivory);
+  --border: rgba(247, 179, 43, 0.25); /* Warm Sunset Gold Border */
+  --input: #24170f;
+  --ring: var(--mustard);
+
+  --font-display: "Instrument Serif", ui-serif, Georgia, serif;
+  --font-sans: "Work Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer utilities {
+  .font-display {
+    font-family: "Instrument Serif", ui-serif, Georgia, serif;
+  }
+  .font-sans {
+    font-family: "Work Sans", ui-sans-serif, system-ui, sans-serif;
+  }
+}
+
+:root {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-ring-offset-background: var(--background);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
-}
-
-@theme inline {
-  --font-display: "Instrument Serif", ui-serif, Georgia, serif;
-  --font-sans: "Work Sans", ui-sans-serif, system-ui, sans-serif;
   --color-ember: var(--ember);
   --color-amber: var(--amber);
   --color-magenta: var(--magenta);
   --color-violet: var(--violet);
   --color-ink: var(--ink);
-}
-
-:root {
-  --radius: 1rem;
-
-  /* Sunset Blaze */
-  --ember: oklch(0.7 0.185 42); /* #ff6b35 */
-  --amber: oklch(0.765 0.155 65); /* #f7931e */
-  --magenta: oklch(0.635 0.213 356); /* #e84393 */
-  --violet: oklch(0.55 0.212 287); /* #6c5ce7 */
-  --ink: oklch(0.12 0.012 288); /* #0a0a0f */
-
-  --background: oklch(0.12 0.012 288);
-  --foreground: oklch(0.975 0.002 285);
-  --card: oklch(0.16 0.014 288);
-  --card-foreground: oklch(0.975 0.002 285);
-  --popover: oklch(0.15 0.014 288);
-  --popover-foreground: oklch(0.975 0.002 285);
-  --primary: oklch(0.7 0.185 42);
-  --primary-foreground: oklch(0.12 0.012 288);
-  --secondary: oklch(0.19 0.014 288);
-  --secondary-foreground: oklch(0.975 0.002 285);
-  --muted: oklch(0.19 0.014 288);
-  --muted-foreground: oklch(0.7 0.008 286);
-  --accent: oklch(0.765 0.155 65);
-  --accent-foreground: oklch(0.12 0.012 288);
-  --destructive: oklch(0.62 0.22 25);
-  --destructive-foreground: oklch(0.97 0.01 285);
-  --border: oklch(1 0 0 / 0.11);
-  --input: oklch(1 0 0 / 0.09);
-  --ring: oklch(0.7 0.185 42);
-  --sidebar: oklch(0.15 0.014 288);
-  --sidebar-foreground: oklch(0.975 0.002 285);
-  --sidebar-primary: oklch(0.7 0.185 42);
-  --sidebar-primary-foreground: oklch(0.12 0.012 288);
-  --sidebar-accent: oklch(0.19 0.014 288);
-  --sidebar-accent-foreground: oklch(0.975 0.002 285);
-  --sidebar-border: oklch(1 0 0 / 0.11);
-  --sidebar-ring: oklch(0.7 0.185 42);
+  --color-text-heading: var(--text-heading);
+  --color-text-body: var(--text-body);
+  --color-text-caption: var(--text-caption);
+  --color-text-eyebrow: var(--text-eyebrow);
 
   --gradient-blaze: linear-gradient(
     90deg,
-    var(--ember) 0%,
-    var(--amber) 28%,
-    var(--magenta) 66%,
-    var(--violet) 100%
+    var(--terracotta) 0%,
+    var(--mustard) 35%,
+    var(--seafoam) 70%,
+    var(--olive) 100%
   );
-  --shadow-lift: 0 40px 90px -40px oklch(0 0 0 / 0.9);
+  --shadow-lift: 0 40px 90px -40px rgba(0, 0, 0, 0.95);
   --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -147,94 +135,159 @@
 
 /* ---------- HH Goa brand utilities ---------- */
 
-@utility text-blaze {
-  background: var(--gradient-blaze);
-  background-size: 180% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: blaze-pan 14s ease-in-out infinite alternate;
-}
-
-@utility rule-blaze {
-  background: var(--gradient-blaze);
-  background-size: 200% 100%;
-  animation: blaze-pan 12s ease-in-out infinite alternate;
-}
-
-@utility eyebrow {
-  font-size: 0.625rem;
-  font-weight: 600;
-  letter-spacing: 0.32em;
-  text-transform: uppercase;
-}
-
-@utility field-line {
-  width: 100%;
-  background: transparent;
-  border: 0;
-  border-bottom: 1px solid var(--color-border);
-  padding: 0.85rem 0;
-  outline: none;
-  transition: border-color 0.35s var(--ease-out-quint);
-  &:focus {
-    border-bottom-color: var(--magenta);
+@layer utilities {
+  .text-seafoam {
+    color: #36c5c0;
   }
-  &::placeholder {
-    color: oklch(1 0 0 / 0.22);
+  .text-ember {
+    color: #ff6b35;
+  }
+  .text-amber {
+    color: #f7b32b;
+  }
+  .text-sand {
+    color: #e8d5c4;
+  }
+  .text-taupe {
+    color: #c4ab97;
   }
 }
 
-@utility btn-blaze {
-  position: relative;
-  overflow: hidden;
-  background: oklch(1 0 0);
-  color: oklch(0.12 0.012 288);
-  transition:
-    transform 0.4s var(--ease-out-quint),
-    color 0.35s ease;
-  &::before {
-    content: "";
-    position: absolute;
-    inset: 0;
+@layer utilities {
+  .text-blaze {
+    color: var(--coffee);
+  }
+
+  .rule-blaze {
     background: var(--gradient-blaze);
-    transform: translateY(101%);
-    transition: transform 0.5s var(--ease-out-quint);
+    background-size: 200% 100%;
+    animation: blaze-pan 12s ease-in-out infinite alternate;
   }
-  & > * {
-    position: relative;
-    z-index: 1;
-  }
-  &:hover {
-    transform: translateY(-3px);
-    color: oklch(1 0 0);
-  }
-  &:hover::before {
-    transform: translateY(0);
-  }
-  &:active {
-    transform: translateY(-1px);
-  }
-}
 
-@utility btn-ghost {
-  border: 1px solid var(--color-border);
-  transition:
-    border-color 0.35s var(--ease-out-quint),
-    background-color 0.35s var(--ease-out-quint),
-    transform 0.4s var(--ease-out-quint);
-  &:hover {
-    border-color: oklch(1 0 0 / 0.35);
-    background-color: oklch(1 0 0 / 0.04);
+  .eyebrow {
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+  }
+
+  .field-line {
+    width: 100%;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--color-border);
+    padding: 0.85rem 0;
+    outline: none;
+    color: var(--coffee);
+    transition: border-color 0.35s var(--ease-out-quint);
+  }
+
+  .field-line:focus {
+    border-bottom-color: #ff6b35;
+  }
+
+  .field-line::placeholder {
+    color: rgba(232, 213, 196, 0.45);
+  }
+
+  /* Vibrant Sunset Blaze Primary CTA Button */
+  .btn-blaze {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #d95a2b 0%, #ff6b35 50%, #f7b32b 100%);
+    color: #ffffff;
+    font-weight: 700;
+    border-radius: 0.75rem;
+    box-shadow: 0 6px 20px -4px rgba(255, 107, 51, 0.45);
+    transition:
+      transform 0.35s var(--ease-out-quint),
+      box-shadow 0.35s var(--ease-out-quint),
+      filter 0.35s ease;
+  }
+
+  .btn-blaze:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px -4px rgba(255, 107, 51, 0.65);
+    filter: brightness(1.08);
+    color: #ffffff;
+  }
+
+  .btn-blaze:active {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px -2px rgba(255, 107, 51, 0.5);
+  }
+
+  /* Multi-color Ghost Button variants */
+  .btn-ghost {
+    border: 1px solid rgba(247, 179, 43, 0.4);
+    background-color: rgba(247, 179, 43, 0.06);
+    color: #f7b32b;
+    border-radius: 0.75rem;
+    transition:
+      border-color 0.25s var(--ease-out-quint),
+      background-color 0.25s var(--ease-out-quint),
+      color 0.25s var(--ease-out-quint),
+      transform 0.25s var(--ease-out-quint);
+  }
+
+  .btn-ghost:hover {
+    border-color: #f7b32b;
+    background-color: rgba(247, 179, 43, 0.2);
+    color: #ffffff;
     transform: translateY(-2px);
   }
+
+  .btn-ghost-seafoam {
+    border: 1px solid rgba(54, 197, 192, 0.45);
+    background-color: rgba(54, 197, 192, 0.08);
+    color: #36c5c0;
+    border-radius: 0.75rem;
+    transition:
+      border-color 0.25s var(--ease-out-quint),
+      background-color 0.25s var(--ease-out-quint),
+      color 0.25s var(--ease-out-quint),
+      transform 0.25s var(--ease-out-quint);
+  }
+
+  .btn-ghost-seafoam:hover {
+    border-color: #36c5c0;
+    background-color: rgba(54, 197, 192, 0.22);
+    color: #ffffff;
+    transform: translateY(-2px);
+  }
+
+  .btn-ghost-ember {
+    border: 1px solid rgba(255, 107, 51, 0.45);
+    background-color: rgba(255, 107, 51, 0.08);
+    color: #ff6b35;
+    border-radius: 0.75rem;
+    transition:
+      border-color 0.25s var(--ease-out-quint),
+      background-color 0.25s var(--ease-out-quint),
+      color 0.25s var(--ease-out-quint),
+      transform 0.25s var(--ease-out-quint);
+  }
+
+  .btn-ghost-ember:hover {
+    border-color: #ff6b35;
+    background-color: rgba(255, 107, 51, 0.22);
+    color: #ffffff;
+    transform: translateY(-2px);
+  }
+
+  .btn-ghost:focus-visible {
+    outline: 2px solid var(--mustard);
+    outline-offset: 2px;
+  }
 }
 
+/* ---------- keyframes ---------- */
+
 @keyframes blaze-pan {
-  from {
+  0% {
     background-position: 0% 50%;
   }
-  to {
+  100% {
     background-position: 100% 50%;
   }
 }
@@ -290,29 +343,31 @@
   }
 }
 
-@utility animate-rise {
-  animation: rise-in 0.9s var(--ease-out-quint) both;
-}
+@layer utilities {
+  .animate-rise {
+    animation: rise-in 0.9s var(--ease-out-quint) both;
+  }
 
-@utility drift-glow {
-  animation: drift-glow 26s ease-in-out infinite;
-  will-change: transform, opacity;
-}
+  .drift-glow {
+    animation: drift-glow 26s ease-in-out infinite;
+    will-change: transform, opacity;
+  }
 
-@utility tide-band {
-  animation: tide linear infinite;
-  will-change: transform;
-}
+  .tide-band {
+    animation: tide linear infinite;
+    will-change: transform;
+  }
 
-@utility frond-sway {
-  transform-origin: bottom center;
-  animation: frond-sway 9s ease-in-out infinite;
-  will-change: transform;
-}
+  .frond-sway {
+    transform-origin: bottom center;
+    animation: frond-sway 9s ease-in-out infinite;
+    will-change: transform;
+  }
 
-@utility marquee-track {
-  animation: marquee 38s linear infinite;
-  will-change: transform;
+  .marquee-track {
+    animation: marquee 38s linear infinite;
+    will-change: transform;
+  }
 }
 
 /* ---------- ambient scene motion ---------- */
@@ -365,20 +420,6 @@
   transform-box: fill-box;
   transform-origin: center;
   will-change: transform;
-}
-
-/* ---------- reduced motion ----------
- * "auto" follows the OS; the toggle writes data-motion on <html> to override.
- */
-@media (prefers-reduced-motion: reduce) {
-  html:not([data-motion="on"]) *,
-  html:not([data-motion="on"]) *::before,
-  html:not([data-motion="on"]) *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
 }
 
 html[data-motion="off"] *,

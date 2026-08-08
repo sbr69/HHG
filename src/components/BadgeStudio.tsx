@@ -184,15 +184,14 @@ export function BadgeStudio() {
         {/* ---------------- editorial + controls ---------------- */}
         <div className="order-2 space-y-12 lg:order-1">
           <Reveal>
-            <span className="eyebrow text-violet">{t("studio.eyebrow")}</span>
-            <h2 className="mt-5 font-display text-[clamp(3rem,11vw,6.5rem)] leading-[0.88] tracking-tight">
+            <span className="eyebrow text-seafoam font-semibold tracking-[0.35em]">
+              {t("studio.eyebrow")}
+            </span>
+            <h2 className="mt-5 font-display text-[clamp(3rem,11vw,6.5rem)] leading-[0.88] tracking-tight text-coffee drop-shadow-md">
               {t("studio.titlePrefix")}
               <br />
-              <span className="text-blaze italic">{t("studio.titleHighlight")}</span>
+              <span className="italic text-ember">{t("studio.titleHighlight")}</span>
             </h2>
-            <p className="mt-7 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg">
-              {t("studio.description")}
-            </p>
           </Reveal>
 
           <Reveal delay={80} className="space-y-10">
@@ -212,8 +211,8 @@ export function BadgeStudio() {
                 }}
                 className={`group relative flex h-44 w-full cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed transition-all duration-500 ${
                   dragging
-                    ? "scale-[1.01] border-ember bg-(--ember)/8"
-                    : "border-border hover:border-(--ember)/60 hover:bg-foreground/3"
+                    ? "scale-[1.01] border-ember bg-ember/15"
+                    : "border-border hover:border-ember/60 hover:bg-white/5"
                 }`}
               >
                 <input
@@ -222,15 +221,13 @@ export function BadgeStudio() {
                   className="absolute inset-0 cursor-pointer opacity-0"
                   onChange={(e) => void handleFile(e.target.files?.[0])}
                 />
-                <span className="mb-4 grid size-12 place-items-center rounded-full bg-foreground/5 transition-transform duration-500 group-hover:scale-110">
-                  <Upload className="size-5 text-muted-foreground transition-colors group-hover:text-ember" />
+                <span className="mb-4 grid size-12 place-items-center rounded-full bg-ember/15 transition-transform duration-500 group-hover:scale-110 group-hover:bg-ember/25">
+                  <Upload className="size-5 text-ember transition-colors group-hover:text-amber" />
                 </span>
-                <span className="text-sm text-muted-foreground">
+                <span className="text-sm font-medium text-sand">
                   {hasPhoto ? t("studio.swapPortrait") : t("studio.dropPortrait")}
                 </span>
-                <span className="eyebrow mt-2 text-muted-foreground/60">
-                  {t("studio.supportedFormats")}
-                </span>
+                <span className="eyebrow mt-2 text-taupe">{t("studio.supportedFormats")}</span>
               </label>
             </div>
 
@@ -254,14 +251,11 @@ export function BadgeStudio() {
                 />
               </div>
 
-              <div className="mt-8 flex items-end justify-between border-t border-border pt-5">
+              <div className="mt-8 border-t border-border pt-5">
                 <div className="min-w-0">
-                  <p className="eyebrow text-muted-foreground">{t("studio.assignedTitle")}</p>
-                  <p className="mt-1 truncate font-display text-3xl italic text-blaze">{title}</p>
+                  <p className="eyebrow text-seafoam">{t("studio.assignedTitle")}</p>
+                  <p className="mt-1 truncate font-display text-3xl italic text-ember">{title}</p>
                 </div>
-                <span className="shrink-0 pl-4 text-xs tracking-widest text-muted-foreground">
-                  {id}
-                </span>
               </div>
             </div>
 
@@ -271,7 +265,7 @@ export function BadgeStudio() {
               <div className="flex flex-col gap-3 sm:flex-row">
                 <button
                   onClick={() => void shareToX()}
-                  className="btn-blaze flex-1 rounded-none px-8 py-5 text-xs font-semibold uppercase tracking-[0.22em]"
+                  className="btn-blaze flex-1 rounded-xl px-8 py-5 text-xs font-bold uppercase tracking-[0.22em]"
                 >
                   <span className="inline-flex items-center justify-center gap-2">
                     {t("studio.shareToX")} <ArrowUpRight className="size-4" />
@@ -279,7 +273,7 @@ export function BadgeStudio() {
                 </button>
                 <button
                   onClick={() => void save("png")}
-                  className="btn-ghost flex items-center justify-center gap-2 px-7 py-5 text-xs font-semibold uppercase tracking-[0.22em]"
+                  className="btn-ghost-seafoam flex items-center justify-center gap-2 px-7 py-5 text-xs font-semibold uppercase tracking-[0.22em]"
                 >
                   <Download className="size-4" />
                   PNG
@@ -294,14 +288,11 @@ export function BadgeStudio() {
                 <button
                   onClick={reset}
                   aria-label={t("studio.startOver")}
-                  className="btn-ghost grid place-items-center px-5 py-5 text-muted-foreground"
+                  className="btn-ghost-ember grid place-items-center px-5 py-5"
                 >
                   <RotateCcw className="size-4" />
                 </button>
               </div>
-              <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
-                {t("studio.exportDescription")}
-              </p>
             </div>
           </Reveal>
         </div>
@@ -331,14 +322,14 @@ export function BadgeStudio() {
             >
               <div
                 aria-hidden
-                className="rule-blaze absolute -inset-3 rounded-[2rem] opacity-30 blur-2xl"
+                className="rule-blaze absolute -inset-3 rounded-4xl opacity-30 blur-2xl"
               />
-              <div className="relative overflow-hidden rounded-[1.75rem] border border-border bg-card/60 p-3 shadow-(--shadow-lift) backdrop-blur-xl">
+              <div className="relative overflow-hidden rounded-[1.75rem] border border-border bg-card/60 p-3 shadow-(--shadow-lift) backdrop-blur-xl text-card-foreground">
                 <div className="mb-3 flex items-center justify-between px-2">
-                  <span className="eyebrow text-muted-foreground">{t("studio.livePreview")}</span>
+                  <span className="eyebrow text-white/60">{t("studio.livePreview")}</span>
                   <span className="flex items-center gap-2">
                     <span className="size-1.5 animate-pulse rounded-full bg-amber" />
-                    <span className="eyebrow text-muted-foreground">
+                    <span className="eyebrow text-white/60">
                       {hasPhoto ? t("studio.issued") : t("studio.draft")}
                     </span>
                   </span>
@@ -359,10 +350,10 @@ export function BadgeStudio() {
                 </div>
                 <div className="flex items-end justify-between px-2 pb-1 pt-4">
                   <div>
-                    <p className="eyebrow text-muted-foreground">{t("studio.holder")}</p>
+                    <p className="eyebrow text-white/60">{t("studio.holder")}</p>
                     <p className="font-display text-xl italic">{name || t("studio.unassigned")}</p>
                   </div>
-                  <p className="text-xs tracking-[0.2em] text-muted-foreground">{id}</p>
+                  <p className="text-xs tracking-[0.2em] text-white/60">{id}</p>
                 </div>
                 {busy && (
                   <div className="absolute inset-0 grid place-items-center bg-background/70 backdrop-blur-sm">
@@ -381,8 +372,8 @@ export function BadgeStudio() {
 function StepLabel({ n, label }: { n: string; label: string }) {
   return (
     <div className="mb-5 flex items-center gap-3">
-      <span className="font-display text-lg italic text-ember">{n}</span>
-      <span className="eyebrow text-muted-foreground">{label}</span>
+      <span className="font-display text-xl italic text-amber font-semibold">{n}</span>
+      <span className="eyebrow text-seafoam">{label}</span>
       <span className="h-px flex-1 bg-border" />
     </div>
   );
@@ -403,7 +394,9 @@ function Field({
 }) {
   return (
     <label className="group block">
-      <span className="eyebrow mb-2 block text-muted-foreground transition-colors">{label}</span>
+      <span className="eyebrow mb-2 block text-amber transition-colors group-hover:text-amber-hover">
+        {label}
+      </span>
       <input
         value={value}
         maxLength={maxLength}
