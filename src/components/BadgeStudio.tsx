@@ -204,10 +204,29 @@ export function BadgeStudio() {
     const text = CAPTION();
     const webIntent = `https://x.com/intent/post?text=${encodeURIComponent(text)}`;
 
+    // Start badge generation promise
+    const exportPromise = exportBadge(getData(), { format: "png", scale: 2 });
+
+    // Synchronously initiate clipboard write within user gesture tick for Desktop
+    let copyPromise: Promise<boolean> | null = null;
+    if (!isMobile && typeof ClipboardItem !== "undefined" && navigator.clipboard?.write) {
+      copyPromise = navigator.clipboard
+        .write([
+          new ClipboardItem({
+            "image/png": exportPromise,
+          }),
+        ])
+        .then(() => true)
+        .catch((err) => {
+          console.warn("clipboard write error:", err);
+          return false;
+        });
+    }
+
     setBusy(true);
 
     try {
-      const blob = await exportBadge(getData(), { format: "png", scale: 2 });
+      const blob = await exportPromise;
       const fileName = "BuildersPass.png";
       const file = new File([blob], fileName, { type: "image/png" });
 
@@ -232,21 +251,14 @@ export function BadgeStudio() {
       }
 
       // Desktop Flow:
-      // 1. Copy image to clipboard (page must stay focused — no window.open before this)
-      if (typeof ClipboardItem !== "undefined" && navigator.clipboard?.write) {
-        try {
-          await navigator.clipboard.write([
-            new ClipboardItem({ "image/png": Promise.resolve(blob) }),
-          ]);
-          toast.success("Pass copied to clipboard!", {
-            description: "Switch to X and press Ctrl+V / Cmd+V to attach your pass.",
-          });
-        } catch (clipErr) {
-          console.warn("clipboard write error:", clipErr);
-        }
+      const copied = await copyPromise;
+      if (copied) {
+        toast.success("Pass copied to clipboard!", {
+          description: "Switch to X and press Ctrl+V / Cmd+V to attach your pass.",
+        });
       }
 
-      // 2. Download the file
+      // Download the file
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -254,7 +266,7 @@ export function BadgeStudio() {
       a.click();
       URL.revokeObjectURL(url);
 
-      // 3. NOW open X intent in a new tab (after clipboard is already written)
+      // Open X intent in a new tab
       window.open(webIntent, "_blank", "noopener,noreferrer");
     } catch (e) {
       if ((e as Error).name === "AbortError") return;
