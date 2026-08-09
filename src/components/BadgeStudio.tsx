@@ -219,26 +219,24 @@ export function BadgeStudio() {
     try {
       const blob = await exportBadge(getData(), { format: "png", scale: 2 });
       const fileName = "BuildersPass.png";
-      // Mobile Flow: Directly redirect to X intent (opens X app directly if permitted)
+      const file = new File([blob], fileName, { type: "image/png" });
+
+      // Mobile Flow: Web Share API — hands image file + caption directly into X composer
       if (isMobile) {
-        if (typeof ClipboardItem !== "undefined" && navigator.clipboard?.write) {
+        const nav = navigator as Navigator & {
+          canShare?: (d: ShareData) => boolean;
+          share?: (d: ShareData) => Promise<void>;
+        };
+        if (nav.canShare && nav.share && nav.canShare({ files: [file] })) {
           try {
-            await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
-            toast.success("Pass copied to clipboard!", {
-              description: "Paste in X to attach your pass.",
-            });
-          } catch (clipErr) {
-            console.warn("clipboard write error:", clipErr);
+            await nav.share({ files: [file], text });
+            toast.success("Shared!");
+            return;
+          } catch (shareErr) {
+            if ((shareErr as Error).name === "AbortError") return;
           }
         }
-
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = fileName;
-        a.click();
-        URL.revokeObjectURL(url);
-
+        // Fallback: open X intent in browser if Web Share not supported
         window.location.href = webIntent;
         return;
       }
