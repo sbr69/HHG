@@ -9,8 +9,8 @@ import {
 } from "@tanstack/react-router";
 import { type ReactNode } from "react";
 
-import "@/lib/i18n";
-import { useTranslation } from "react-i18next";
+import i18n from "@/lib/i18n";
+import { I18nextProvider, useTranslation } from "react-i18next";
 import appCss from "../styles.css?url";
 
 function NotFoundComponent() {
@@ -74,6 +74,8 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
     meta: [
+      { title: "HH Goa 2026" },
+      { name: "description", content: "Hacker House Goa 2026 Builder Pass" },
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { property: "og:site_name", content: "HH Goa 2026" },
@@ -93,6 +95,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { rel: "preload", as: "image", href: "/goa-beach-new.jpg" },
       { rel: "preload", as: "image", href: "/goa-frame-new.webp" },
+      { rel: "preload", as: "image", href: "/logo.jpg" },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
     scripts: [],
@@ -122,9 +125,11 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
-    <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
-    </QueryClientProvider>
+    <I18nextProvider i18n={i18n}>
+      <QueryClientProvider client={queryClient}>
+        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+        <Outlet />
+      </QueryClientProvider>
+    </I18nextProvider>
   );
 }
