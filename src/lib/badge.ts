@@ -2,8 +2,17 @@
 // HH GOA 2026 beach frame as the card artwork. The uploaded portrait is
 // composited into the frame's inner window; the holder's identity is set on a
 // dusk scrim across the bottom of that window.
+// Old frame configuration (do not delete)
+const FRAME_OLD_SRC = "/goa-frame.webp";
+const WIN_OLD = { x: 140, y: 236, w: 790, h: 846 };
 
-const FRAME_SRC = "/goa-frame.webp";
+// New PNG frame configuration (transparent inner window)
+const FRAME_NEW_SRC = "/goa-frame-new.png";
+const WIN_NEW = { x: 129, y: 184, w: 823, h: 922 };
+
+// Active frame configuration
+const FRAME_SRC = FRAME_NEW_SRC;
+const WIN = WIN_NEW;
 
 export type BadgeData = {
   name: string;
@@ -18,9 +27,6 @@ export type BadgeData = {
 /** Native size of the frame illustration. */
 export const CARD_W = 1086;
 export const CARD_H = 1448;
-
-/** The cream window inside the illustrated border. */
-const WIN = { x: 140, y: 236, w: 790, h: 846 };
 
 const EMBER = "#FF6B35";
 const AMBER = "#F7931E";
@@ -134,16 +140,15 @@ export function renderBadge(canvas: HTMLCanvasElement, d: BadgeData, scale = 1) 
   ctx.imageSmoothingQuality = "high";
   ctx.clearRect(0, 0, CARD_W, CARD_H);
 
-  /* ---------- frame artwork ---------- */
+  /* ---------- background fill ---------- */
   ctx.fillStyle = CREAM;
   ctx.fillRect(0, 0, CARD_W, CARD_H);
-  if (frameImg) ctx.drawImage(frameImg, 0, 0, CARD_W, CARD_H);
 
   /* ---------- portrait inside the window ---------- */
   const { x: px, y: py, w: pw, h: ph } = WIN;
 
   ctx.save();
-  roundRect(ctx, px, py, pw, ph, 10);
+  roundRect(ctx, px, py, pw, ph, 24);
   ctx.clip();
 
   if (d.photo) {
@@ -216,11 +221,8 @@ export function renderBadge(canvas: HTMLCanvasElement, d: BadgeData, scale = 1) 
 
   ctx.restore();
 
-  // crisp edge around the window
-  roundRect(ctx, px, py, pw, ph, 10);
-  ctx.strokeStyle = "rgba(10,10,15,0.18)";
-  ctx.lineWidth = 1.5;
-  ctx.stroke();
+  /* ---------- frame artwork overlay ---------- */
+  if (frameImg) ctx.drawImage(frameImg, 0, 0, CARD_W, CARD_H);
 
   void nameSize;
   void INK;

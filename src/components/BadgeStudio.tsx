@@ -319,39 +319,17 @@ export function BadgeStudio() {
             >
               <div
                 aria-hidden
-                className="rule-blaze absolute -inset-3 rounded-4xl opacity-30 blur-2xl"
+                className="rule-blaze absolute -inset-3 rounded-none opacity-30 blur-2xl"
               />
-              <div className="relative overflow-hidden rounded-[1.75rem] border border-border bg-card/60 p-3 shadow-(--shadow-lift) backdrop-blur-xl text-card-foreground">
-                <div className="mb-3 flex items-center justify-between px-2">
-                  <span className="eyebrow text-white/60">{t("studio.livePreview")}</span>
-                  <span className="flex items-center gap-2">
-                    <span className="size-1.5 animate-pulse rounded-full bg-amber" />
-                    <span className="eyebrow text-white/60">
-                      {hasPhoto ? t("studio.issued") : t("studio.draft")}
-                    </span>
-                  </span>
-                </div>
+              <div className="relative overflow-hidden rounded-none border border-border shadow-(--shadow-lift)">
                 <canvas
                   ref={canvasRef}
                   width={CARD_W}
                   height={CARD_H}
-                  className="w-full rounded-4xl"
+                  className="w-full rounded-none"
                   style={{ aspectRatio: `${CARD_W}/${CARD_H}` }}
                   aria-label="Your HH Goa 2026 builder pass preview"
                 />
-                {/* perforation + stub */}
-                <div className="relative mt-3">
-                  <span className="absolute -left-6 top-1/2 size-5 -translate-y-1/2 rounded-full bg-background" />
-                  <span className="absolute -right-6 top-1/2 size-5 -translate-y-1/2 rounded-full bg-background" />
-                  <div className="border-t border-dashed border-border" />
-                </div>
-                <div className="flex items-end justify-between px-2 pb-1 pt-4">
-                  <div>
-                    <p className="eyebrow text-white/60">{t("studio.holder")}</p>
-                    <p className="font-display text-xl italic">{name || t("studio.unassigned")}</p>
-                  </div>
-                  <p className="text-xs tracking-[0.2em] text-white/60">{id}</p>
-                </div>
                 {busy && (
                   <div className="absolute inset-0 grid place-items-center bg-background/70 backdrop-blur-sm">
                     <Loader2 className="size-7 animate-spin text-ember" />
