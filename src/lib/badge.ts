@@ -39,8 +39,9 @@ const PAPER = "#F8F9FA";
 const CREAM = "#FDF2E0";
 
 const SERIF = (s: number, italic = false) =>
-  `${italic ? "italic " : ""}400 ${s}px 'Instrument Serif', Georgia, serif`;
-const SANS = (s: number, w = 400) => `${w} ${s}px 'Work Sans', system-ui, sans-serif`;
+  `${italic ? "italic " : ""}400 ${s}px 'Instrument Serif'`;
+const SANS = (s: number, w = 400) => `${w} ${s}px 'Work Sans'`;
+const TECH = (s: number, w = 700) => `${w} ${s}px 'Space Grotesk'`;
 
 let frameImg: HTMLImageElement | null = null;
 let framePromise: Promise<HTMLImageElement> | null = null;
@@ -229,18 +230,19 @@ export function renderBadge(canvas: HTMLCanvasElement, d: BadgeData, scale = 1) 
 
   ctx.textBaseline = "alphabetic";
 
-  // Craft (stack) above full name in black (Golden Ratio 28px scale)
-  ctx.font = SANS(28, 600);
-  ctx.fillStyle = "#000000";
-  const stack = (d.stack || "Builder").trim().toUpperCase();
-  fitText(ctx, stack, iw - 40, 28, (s) => SANS(s, 600), 16);
-  letterSpaced(ctx, stack, ix, baseline - 172, 4.5);
-
-  // Full Name below craft with space below
+  // Full Name
   const name = (d.name || "Your Name").trim();
   const nameSize = fitText(ctx, name, iw, 86, (s) => SERIF(s, true), 34);
   ctx.fillStyle = PAPER;
-  ctx.fillText(name, ix - 2, baseline - 72);
+  ctx.fillText(name, ix - 2, baseline - 95);
+
+  // Craft (stack) directly below Full Name in green (Space Grotesk tech typography)
+  ctx.font = TECH(26, 700);
+  ctx.fillStyle = "rgb(34, 197, 94)";
+  const stack = (d.stack || "Builder").trim().toUpperCase();
+  fitText(ctx, stack, iw - 54, 26, (s) => TECH(s, 700), 16);
+  const craftPaddingLeft = ix + 50;
+  letterSpaced(ctx, stack, craftPaddingLeft, baseline - 52, 4);
 
   // hairline + stub row
   ctx.strokeStyle = "rgba(248,249,250,0.22)";
@@ -260,7 +262,10 @@ export function renderBadge(canvas: HTMLCanvasElement, d: BadgeData, scale = 1) 
   ctx.restore();
 
   /* ---------- frame artwork overlay ---------- */
-  if (frameImg) ctx.drawImage(frameImg, 0, 0, CARD_W, CARD_H);
+  const frame = getFrame() ?? frameImg;
+  if (frame) {
+    ctx.drawImage(frame, 0, 0, CARD_W, CARD_H);
+  }
 
   void nameSize;
   void INK;
@@ -276,9 +281,17 @@ export async function exportBadge(
   d: BadgeData,
   { format = "png", scale = 2 }: { format?: ExportFormat; scale?: number } = {},
 ): Promise<Blob> {
-  await loadFrame().catch(() => undefined);
+  const frame = await loadFrame().catch(() => null);
   const canvas = document.createElement("canvas");
   renderBadge(canvas, d, scale);
+
+  // Guarantee frame is drawn on the exported canvas
+  const ctx = canvas.getContext("2d");
+  if (ctx && frame) {
+    ctx.setTransform(scale, 0, 0, scale, 0, 0);
+    ctx.drawImage(frame, 0, 0, CARD_W, CARD_H);
+  }
+
   const blob = await new Promise<Blob | null>((resolve) =>
     canvas.toBlob(resolve, format === "jpg" ? "image/jpeg" : "image/png", 0.95),
   );
