@@ -204,16 +204,6 @@ export function BadgeStudio() {
     const text = CAPTION();
     const webIntent = `https://x.com/intent/post?text=${encodeURIComponent(text)}`;
 
-    // 1. Synchronously open popup window on Desktop FIRST so browser popup blockers do not block it
-    let popup: Window | null = null;
-    if (!isMobile) {
-      try {
-        popup = window.open("about:blank", "_blank");
-      } catch (err) {
-        console.warn("popup open error:", err);
-      }
-    }
-
     setBusy(true);
 
     try {
@@ -241,23 +231,22 @@ export function BadgeStudio() {
         return;
       }
 
-      // Desktop Flow: Copy image to clipboard using Promise-based ClipboardItem (preserves user gesture activation)
+      // Desktop Flow:
+      // 1. Copy image to clipboard (page must stay focused — no window.open before this)
       if (typeof ClipboardItem !== "undefined" && navigator.clipboard?.write) {
         try {
           await navigator.clipboard.write([
-            new ClipboardItem({
-              "image/png": exportBadge(getData(), { format: "png", scale: 2 }),
-            }),
+            new ClipboardItem({ "image/png": Promise.resolve(blob) }),
           ]);
           toast.success("Pass copied to clipboard!", {
-            description: "Press paste (Ctrl+V / Cmd+V) to attach your pass.",
+            description: "Switch to X and press Ctrl+V / Cmd+V to attach your pass.",
           });
         } catch (clipErr) {
           console.warn("clipboard write error:", clipErr);
         }
       }
 
-      // Trigger download fallback on desktop
+      // 2. Download the file
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -265,20 +254,12 @@ export function BadgeStudio() {
       a.click();
       URL.revokeObjectURL(url);
 
-      if (popup && !popup.closed) {
-        popup.location.href = webIntent;
-      } else {
-        window.location.href = webIntent;
-      }
+      // 3. NOW open X intent in a new tab (after clipboard is already written)
+      window.open(webIntent, "_blank", "noopener,noreferrer");
     } catch (e) {
-      if (popup && !popup.closed) popup.close();
       if ((e as Error).name === "AbortError") return;
       console.error("Share error:", e);
-      if (isMobile) {
-        window.location.href = webIntent;
-      } else {
-        window.open(webIntent, "_blank", "noopener,noreferrer");
-      }
+      window.open(webIntent, "_blank", "noopener,noreferrer");
     } finally {
       setBusy(false);
     }
