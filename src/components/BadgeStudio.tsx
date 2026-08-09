@@ -119,10 +119,19 @@ export function BadgeStudio() {
     [name, stack, title, id, zoom, offsetX, offsetY],
   );
 
+  const lastBlobRef = useRef<Blob | null>(null);
+
   const redraw = useCallback(() => {
     const cv = canvasRef.current;
     if (!cv) return;
     renderBadge(cv, getData(), 1);
+    
+    // Background generation of the final blob for instantaneous clipboard sharing
+    exportBadge(getData(), { format: "png", scale: 2 })
+      .then((blob) => {
+        lastBlobRef.current = blob;
+      })
+      .catch(console.error);
   }, [getData]);
 
   useEffect(() => {
@@ -204,32 +213,32 @@ export function BadgeStudio() {
     const text = CAPTION();
     const webIntent = `https://x.com/intent/post?text=${encodeURIComponent(text)}`;
 
-    // Start badge generation promise
-    const exportPromise = exportBadge(getData(), { format: "png", scale: 2 });
+    const blob = lastBlobRef.current;
+    if (!blob) {
+      toast.error("Badge is still generating, please try again in a moment!");
+      return;
+    }
 
-    // Synchronously initiate clipboard write within user gesture tick for Desktop
-    let copyPromise: Promise<boolean> | null = null;
+    const fileName = "BuildersPass.png";
+    const file = new File([blob], fileName, { type: "image/png" });
+
+    // Desktop Flow: Synchronous clipboard write without Promises in ClipboardItem
+    // Guarantees 100% compliance with Safari and Chromium user-gesture restrictions
+    let copied = false;
     if (!isMobile && typeof ClipboardItem !== "undefined" && navigator.clipboard?.write) {
-      copyPromise = navigator.clipboard
-        .write([
-          new ClipboardItem({
-            "image/png": exportPromise,
-          }),
-        ])
-        .then(() => true)
-        .catch((err) => {
-          console.warn("clipboard write error:", err);
-          return false;
-        });
+      try {
+        await navigator.clipboard.write([
+          new ClipboardItem({ "image/png": blob }),
+        ]);
+        copied = true;
+      } catch (err) {
+        console.warn("clipboard write error:", err);
+      }
     }
 
     setBusy(true);
 
     try {
-      const blob = await exportPromise;
-      const fileName = "BuildersPass.png";
-      const file = new File([blob], fileName, { type: "image/png" });
-
       // Mobile Flow: Web Share API — hands image file + caption directly into X composer
       if (isMobile) {
         const nav = navigator as Navigator & {
@@ -250,8 +259,7 @@ export function BadgeStudio() {
         return;
       }
 
-      // Desktop Flow:
-      const copied = await copyPromise;
+      // Desktop Flow continued:
       if (copied) {
         toast.success("Pass copied to clipboard!", {
           description: "Switch to X and press Ctrl+V / Cmd+V to attach your pass.",
