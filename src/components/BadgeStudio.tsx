@@ -199,18 +199,16 @@ export function BadgeStudio() {
 
   return (
     <section id="studio" className="w-full border-t border-border">
-      <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-14 px-5 py-14 sm:px-8 md:py-24 lg:grid-cols-2 lg:items-start lg:gap-20">
+      <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-8 px-4 py-8 sm:gap-14 sm:px-8 sm:py-16 md:py-24 lg:grid-cols-2 lg:items-start lg:gap-20">
         {/* ---------------- editorial + controls ---------------- */}
-        <div className="order-2 space-y-12 lg:order-1">
+        <div className="order-2 space-y-8 sm:space-y-12 lg:order-1">
           <Reveal>
-            <h2 className="font-display text-[clamp(3rem,11vw,6.5rem)] leading-[0.88] tracking-tight text-coffee drop-shadow-md">
-              {t("studio.titlePrefix")}
-              <br />
-              <span className="italic text-ember">{t("studio.titleHighlight")}</span>
+            <h2 className="font-display text-[clamp(2rem,6.5vw,4.5rem)] leading-[0.88] tracking-tight text-coffee drop-shadow-md">
+              {t("studio.titlePrefix")} <span className="italic text-ember">{t("studio.titleHighlight")}</span>
             </h2>
           </Reveal>
 
-          <Reveal delay={80} className="space-y-10">
+          <Reveal delay={80} className="space-y-8 sm:space-y-10">
             {/* 01 — upload */}
             <div>
               <StepLabel n="01" label={t("studio.step1")} />
@@ -225,7 +223,7 @@ export function BadgeStudio() {
                   setDragging(false);
                   void handleFile(e.dataTransfer.files?.[0]);
                 }}
-                className={`group relative flex h-44 w-full cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed transition-all duration-500 ${
+                className={`group relative flex h-36 w-full cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed transition-all duration-500 sm:h-44 ${
                   dragging
                     ? "scale-[1.01] border-black bg-black/40"
                     : "border-black bg-black/20 hover:border-black hover:bg-black/35"
@@ -237,20 +235,20 @@ export function BadgeStudio() {
                   className="absolute inset-0 cursor-pointer opacity-0"
                   onChange={(e) => void handleFile(e.target.files?.[0])}
                 />
-                <span className="mb-4 grid size-14 place-items-center rounded-full bg-ember/15 transition-transform duration-500 group-hover:scale-110 group-hover:bg-ember/25">
-                  <Upload className="size-6 text-ember transition-colors group-hover:text-amber" />
+                <span className="mb-2.5 grid size-10 place-items-center rounded-full bg-ember/15 transition-transform duration-500 group-hover:scale-110 group-hover:bg-ember/25 sm:mb-4 sm:size-14">
+                  <Upload className="size-4.5 text-ember transition-colors group-hover:text-amber sm:size-6" />
                 </span>
-                <span className="text-phi-md font-semibold text-sand">
+                <span className="text-phi-md font-semibold text-sand sm:text-phi-lg">
                   {hasPhoto ? t("studio.swapPortrait") : t("studio.dropPortrait")}
                 </span>
-                <span className="text-phi-sm mt-2.5 font-medium uppercase tracking-wider text-taupe">{t("studio.supportedFormats")}</span>
+                <span className="text-phi-sm mt-1.5 font-medium uppercase tracking-wider text-taupe sm:mt-2.5 sm:text-phi-base">{t("studio.supportedFormats")}</span>
               </label>
             </div>
 
             {/* 02 — details */}
             <div>
               <StepLabel n="02" label={t("studio.step2")} />
-              <div className="space-y-7">
+              <div className="space-y-5 sm:space-y-7">
                 <Field
                   label={t("studio.fullName")}
                   value={name}
@@ -262,15 +260,15 @@ export function BadgeStudio() {
                   label={t("studio.craftStack")}
                   value={stack}
                   onChange={setStack}
-                  placeholder="AI engineer · React · Rust"
+                  placeholder="AI engineer"
                   maxLength={38}
                 />
               </div>
 
-              <div className="mt-7">
+              <div className="mt-6 sm:mt-7">
                 <div className="min-w-0">
-                  <p className="text-phi-base mb-2.5 block font-semibold uppercase tracking-[0.2em] text-seafoam">{t("studio.assignedTitle")}</p>
-                  <p className="truncate font-display text-phi-2xl italic text-ember leading-tight pb-3 border-b-2 border-black">{title}</p>
+                  <p className="text-phi-md mb-2 block font-semibold uppercase tracking-[0.2em] text-white sm:text-phi-lg sm:mb-2.5">{t("studio.assignedTitle")}</p>
+                  <p className="truncate font-display text-phi-2xl italic leading-tight pb-2.5 border-b-2 border-black sm:text-phi-3xl sm:pb-3" style={{ color: "rgb(255, 200, 89)" }}>{title}</p>
                 </div>
               </div>
             </div>
@@ -278,95 +276,93 @@ export function BadgeStudio() {
             {/* 03 — issue */}
             <div>
               <StepLabel n="03" label={t("studio.step3")} />
-              <div className="flex flex-col gap-2.5 sm:flex-row">
+              <div className="flex flex-wrap gap-2 sm:flex-nowrap sm:gap-2.5">
                 <button
                   onClick={() => void shareToX()}
-                  className="btn-blaze rounded-xl px-3 py-3.5 text-phi-sm font-bold uppercase tracking-[0.14em]"
+                  className="btn-blaze rounded-xl px-3.5 py-3 text-phi-sm font-bold uppercase tracking-[0.14em] sm:px-4 sm:py-3.5 sm:text-phi-base"
                 >
                   <span className="inline-flex items-center justify-center gap-1.5">
-                    {t("studio.shareToX")} <ArrowUpRight className="size-4" />
+                    {t("studio.shareToX")} <ArrowUpRight className="size-4 sm:size-4.5" />
                   </span>
                 </button>
                 <button
                   onClick={() => void save("png")}
-                  className="btn-ghost-seafoam flex items-center justify-center gap-2 px-3.5 py-3.5 text-phi-sm font-bold uppercase tracking-[0.16em]"
+                  className="btn-ghost-seafoam flex items-center justify-center gap-1.5 px-3.5 py-3 text-phi-sm font-bold uppercase tracking-[0.14em] sm:gap-2 sm:px-4 sm:py-3.5 sm:text-phi-base"
                 >
-                  <Download className="size-4" />
+                  <Download className="size-4 sm:size-4.5" />
                   PNG
                 </button>
                 <button
                   onClick={() => void save("jpg")}
-                  className="btn-ghost flex items-center justify-center gap-2 px-3.5 py-3.5 text-phi-sm font-bold uppercase tracking-[0.16em]"
+                  className="btn-ghost flex items-center justify-center gap-1.5 px-3.5 py-3 text-phi-sm font-bold uppercase tracking-[0.14em] sm:gap-2 sm:px-4 sm:py-3.5 sm:text-phi-base"
                 >
-                  <ImageDown className="size-4" />
+                  <ImageDown className="size-4 sm:size-4.5" />
                   JPG
                 </button>
                 <button
                   onClick={reset}
                   aria-label={t("studio.startOver")}
-                  className="btn-ghost-ember grid place-items-center px-3.5 py-3.5"
+                  className="btn-ghost-ember grid place-items-center px-3.5 py-3 sm:px-4 sm:py-3.5"
                 >
-                  <RotateCcw className="size-4" />
+                  <RotateCcw className="size-4 sm:size-4.5" />
                 </button>
               </div>
             </div>
           </Reveal>
         </div>
 
-        {/* ---------------- pass preview ---------------- */}
-        <div className="order-1 lg:order-2 lg:sticky lg:top-32">
-          <div
-            className="mx-auto w-full max-w-105"
-            onPointerMove={(e) => {
-              if (!animate) return;
-              const r = e.currentTarget.getBoundingClientRect();
-              setTilt({
-                x: ((e.clientY - r.top) / r.height - 0.5) * -6,
-                y: ((e.clientX - r.left) / r.width - 0.5) * 6,
-              });
-            }}
-            onPointerLeave={() => setTilt({ x: 0, y: 0 })}
-            style={{ perspective: "1400px" }}
-          >
-            <div
-              className="animate-rise relative"
-              style={{
-                transform: animate ? `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)` : undefined,
-                transformStyle: "preserve-3d",
-                transition: "transform .5s var(--ease-out-quint)",
-              }}
-            >
+        {/* ---------------- pass preview canvas ---------------- */}
+        <div className="order-1 lg:order-2 lg:sticky lg:top-12">
+          <Reveal delay={160}>
+            <div className="mx-auto max-w-85 sm:max-w-md lg:max-w-none">
               <div
-                aria-hidden
-                className="rule-blaze absolute -inset-3 rounded-none opacity-30 blur-2xl"
-              />
-              <div className="relative overflow-hidden rounded-none border border-border shadow-(--shadow-lift)">
-                <canvas
-                  ref={canvasRef}
-                  width={CARD_W}
-                  height={CARD_H}
-                  className="w-full rounded-none"
-                  style={{ aspectRatio: `${CARD_W}/${CARD_H}` }}
-                  aria-label="Your HH Goa 2026 builder pass preview"
+                className="group relative transition-transform duration-500"
+                onMouseMove={(e) => {
+                  if (!animate) return;
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const px = (e.clientX - rect.left) / rect.width - 0.5;
+                  const py = (e.clientY - rect.top) / rect.height - 0.5;
+                  setTilt({ x: -py * 7, y: px * 7 });
+                }}
+                onMouseLeave={() => setTilt({ x: 0, y: 0 })}
+                style={{
+                  transform: animate ? `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)` : undefined,
+                  transformStyle: "preserve-3d",
+                  transition: "transform .5s var(--ease-out-quint)",
+                }}
+              >
+                <div
+                  aria-hidden
+                  className="rule-blaze absolute -inset-3 rounded-none opacity-30 blur-2xl"
                 />
-                <img
-                  id="goa-frame-img"
-                  src="/goa-frame-new.webp"
-                  alt=""
-                  className="absolute inset-0 w-full h-full pointer-events-none"
-                  onLoad={() => {
-                    setFrameReady(true);
-                    redraw();
-                  }}
-                />
-                {busy && (
-                  <div className="absolute inset-0 grid place-items-center bg-background/70 backdrop-blur-sm">
-                    <Loader2 className="size-7 animate-spin text-ember" />
-                  </div>
-                )}
+                <div className="relative overflow-hidden rounded-none border border-border shadow-(--shadow-lift)">
+                  <canvas
+                    ref={canvasRef}
+                    width={CARD_W}
+                    height={CARD_H}
+                    className="w-full rounded-none"
+                    style={{ aspectRatio: `${CARD_W}/${CARD_H}` }}
+                    aria-label="Your HH Goa 2026 builder pass preview"
+                  />
+                  <img
+                    id="goa-frame-img"
+                    src="/goa-frame-new.webp"
+                    alt=""
+                    className="absolute inset-0 w-full h-full pointer-events-none"
+                    onLoad={() => {
+                      setFrameReady(true);
+                      redraw();
+                    }}
+                  />
+                  {busy && (
+                    <div className="absolute inset-0 grid place-items-center bg-background/70 backdrop-blur-sm">
+                      <Loader2 className="size-7 animate-spin text-ember" />
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
+          </Reveal>
         </div>
       </div>
     </section>
@@ -375,9 +371,9 @@ export function BadgeStudio() {
 
 function StepLabel({ n, label }: { n: string; label: string }) {
   return (
-    <div className="mb-6 flex items-center gap-4">
-      <span className="font-display text-phi-2xl italic text-amber font-semibold">{n}</span>
-      <span className="text-phi-lg font-bold text-seafoam uppercase tracking-[0.2em]">{label}</span>
+    <div className="mb-4 flex items-center gap-3 sm:mb-6 sm:gap-4">
+      <span className="font-display text-phi-2xl italic text-amber font-semibold sm:text-phi-3xl">{n}</span>
+      <span className="text-phi-lg font-bold text-seafoam uppercase tracking-[0.18em] sm:text-phi-xl sm:tracking-[0.2em]">{label}</span>
     </div>
   );
 }
@@ -397,7 +393,7 @@ function Field({
 }) {
   return (
     <label className="group block">
-      <span className="text-phi-base mb-2.5 block font-semibold uppercase tracking-[0.2em] text-seafoam transition-colors group-hover:text-sand">
+      <span className="text-phi-md mb-2 block font-semibold uppercase tracking-[0.18em] text-white transition-colors group-hover:text-sand sm:text-phi-lg sm:mb-2.5 sm:tracking-[0.2em]">
         {label}
       </span>
       <input
@@ -405,7 +401,7 @@ function Field({
         maxLength={maxLength}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
-        className="field-line font-display text-phi-2xl italic"
+        className="field-line font-display text-phi-2xl italic sm:text-phi-3xl"
       />
     </label>
   );

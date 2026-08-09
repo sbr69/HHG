@@ -207,16 +207,19 @@ export function renderBadge(canvas: HTMLCanvasElement, d: BadgeData, scale = 1) 
   const baseline = py + ph - 62;
 
   ctx.textBaseline = "alphabetic";
+
+  // Craft (stack) above full name in yellow (Golden Ratio 28px scale)
+  ctx.font = SANS(28, 600);
+  ctx.fillStyle = "rgb(255, 200, 89)";
+  const stack = (d.stack || "Builder").trim().toUpperCase();
+  fitText(ctx, stack, iw - 40, 28, (s) => SANS(s, 600), 16);
+  letterSpaced(ctx, stack, ix, baseline - 172, 4.5);
+
+  // Full Name below craft with space below
   const name = (d.name || "Your Name").trim();
   const nameSize = fitText(ctx, name, iw, 86, (s) => SERIF(s, true), 34);
   ctx.fillStyle = PAPER;
-  ctx.fillText(name, ix - 2, baseline - 82);
-
-  ctx.font = SANS(17, 500);
-  ctx.fillStyle = "rgba(248,249,250,0.62)";
-  const stack = (d.stack || "Builder").trim().toUpperCase();
-  fitText(ctx, stack, iw - 40, 17, (s) => SANS(s, 500), 11);
-  letterSpaced(ctx, stack, ix, baseline - 42, 4);
+  ctx.fillText(name, ix - 2, baseline - 72);
 
   // hairline + stub row
   ctx.strokeStyle = "rgba(248,249,250,0.22)";
@@ -226,15 +229,12 @@ export function renderBadge(canvas: HTMLCanvasElement, d: BadgeData, scale = 1) 
   ctx.lineTo(ix + iw, baseline - 24);
   ctx.stroke();
 
-  ctx.fillStyle = EMBER;
-  ctx.font = SERIF(30, true);
-  ctx.fillText(`${d.title}`, ix - 1, baseline + 12);
-
-  ctx.textAlign = "right";
-  ctx.fillStyle = MAGENTA;
-  ctx.font = SERIF(28, true);
-  ctx.fillText("#FrameInGoa", ix + iw + 1, baseline + 12);
+  // Left-aligned assigned title with generous left padding offset
   ctx.textAlign = "left";
+  ctx.fillStyle = "rgb(255, 200, 89)";
+  ctx.font = SERIF(32, true);
+  const titlePaddingLeft = ix + 102;
+  ctx.fillText(`${d.title}`, titlePaddingLeft, baseline + 14);
 
   ctx.restore();
 

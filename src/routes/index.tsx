@@ -52,18 +52,18 @@ function Index() {
 
       <main className="relative w-full">
         {/* Hero title header */}
-        <section className="mx-auto flex w-full max-w-7xl flex-col px-5 pt-16 pb-6 sm:px-8 md:pt-24">
+        <section className="mx-auto flex w-full max-w-7xl flex-col px-4 pt-10 pb-4 sm:px-8 sm:pt-16 md:pt-24">
           <Reveal>
-            <h1 className="font-display text-[clamp(3.5rem,12vw,9rem)] italic leading-[0.84] tracking-tight text-coffee drop-shadow-lg">
+            <h1 className="font-display text-[clamp(2.36rem,10vw,8rem)] italic leading-[0.86] tracking-tight text-coffee drop-shadow-lg">
               {t("hero.titlePrefix")}
               <br />
               <span className="text-ember">{t("hero.titleYear")}</span>
             </h1>
           </Reveal>
           <Reveal delay={120}>
-            <div className="mt-8 flex items-center justify-end gap-4 pr-12 md:pr-24">
-              <span className="h-px w-12 bg-ember" />
-              <span className="font-display text-2xl italic text-amber select-none">
+            <div className="mt-5 flex items-center justify-end gap-3 pr-4 sm:mt-8 sm:gap-4 sm:pr-12 md:pr-24">
+              <span className="h-px w-8 bg-ember sm:w-12" />
+              <span className="font-display text-phi-md sm:text-phi-lg italic text-amber select-none">
                 {t("hero.cta")}
               </span>
             </div>

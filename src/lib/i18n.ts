@@ -49,7 +49,7 @@ export const defaultResources = {
         dropPortrait: "Drop image or click to browse",
         supportedFormats: "JPG · PNG · WEBP · HEIC",
         fullName: "Full name",
-        craftStack: "Craft / stack",
+        craftStack: "Craft",
         assignedTitle: "Assigned title",
         shareToX: "Share to X",
         exportDescription:

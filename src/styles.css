@@ -210,7 +210,7 @@
     border-bottom: 2px solid #000000;
     padding: 0.85rem 0;
     outline: none;
-    color: var(--coffee);
+    color: rgb(255, 200, 89);
     transition: border-color 0.35s var(--ease-out-quint);
   }
 
@@ -222,31 +222,31 @@
     color: rgba(232, 213, 196, 0.45);
   }
 
-  /* Vibrant Sunset Blaze Primary CTA Button */
+  /* Solid Ember Terracotta Primary CTA Button */
   .btn-blaze {
     position: relative;
     overflow: hidden;
-    background: linear-gradient(135deg, #d95a2b 0%, #ff6b35 50%, #f7b32b 100%);
+    background-color: #ff6b35;
     color: #ffffff;
     font-weight: 700;
     border-radius: 0.75rem;
-    box-shadow: 0 6px 20px -4px rgba(255, 107, 51, 0.45);
+    box-shadow: 0 6px 20px -4px rgba(255, 107, 51, 0.4);
     transition:
-      transform 0.35s var(--ease-out-quint),
-      box-shadow 0.35s var(--ease-out-quint),
-      filter 0.35s ease;
+      background-color 0.25s var(--ease-out-quint),
+      transform 0.25s var(--ease-out-quint),
+      box-shadow 0.25s var(--ease-out-quint);
   }
 
   .btn-blaze:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 28px -4px rgba(255, 107, 51, 0.65);
-    filter: brightness(1.08);
+    background-color: #ff7d4d;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px -4px rgba(255, 107, 51, 0.55);
     color: #ffffff;
   }
 
   .btn-blaze:active {
     transform: translateY(-1px);
-    box-shadow: 0 4px 14px -2px rgba(255, 107, 51, 0.5);
+    box-shadow: 0 4px 14px -2px rgba(255, 107, 51, 0.4);
   }
 
   /* Multi-color Ghost Button variants */
