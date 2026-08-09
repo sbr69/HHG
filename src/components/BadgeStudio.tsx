@@ -241,10 +241,14 @@ export function BadgeStudio() {
         return;
       }
 
-      // Desktop Flow: Copy image to clipboard for easy Ctrl+V paste into tweet composer
+      // Desktop Flow: Copy image to clipboard using Promise-based ClipboardItem (preserves user gesture activation)
       if (typeof ClipboardItem !== "undefined" && navigator.clipboard?.write) {
         try {
-          await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
+          await navigator.clipboard.write([
+            new ClipboardItem({
+              "image/png": exportBadge(getData(), { format: "png", scale: 2 }),
+            }),
+          ]);
           toast.success("Pass copied to clipboard!", {
             description: "Press paste (Ctrl+V / Cmd+V) to attach your pass.",
           });
