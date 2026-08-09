@@ -30,16 +30,28 @@ const NOUN = [
   "Prototyper",
 ];
 
-const DOMAIN: Array<[RegExp, string[]]> = [
-  [/\b(ai|ml|llm|agent|gpt|data|ds)\b|machine|model/i, ["Prompt", "Latent", "Vector", "Agentic"]],
-  [/react|front|ui|ux|design|css|next/i, ["Pixel", "Interface", "Kinetic", "Motion"]],
-  [
-    /back|node|go|rust|api|server|infra|devops|cloud|k8s/i,
-    ["Systems", "Throughput", "Edge", "Uptime"],
-  ],
-  [/solid|web3|chain|crypto|contract|zk/i, ["Onchain", "Trustless", "Ledger", "Consensus"]],
-  [/mobile|ios|android|flutter|swift|kotlin/i, ["Pocket", "Handheld", "Tapworthy", "Offline"]],
-  [/found|ceo|pm|product|growth|market/i, ["Zero-to-One", "Roadmap", "Momentum", "Launch"]],
+const DOMAIN: Array<{ re: RegExp; list: string[] }> = [
+  {
+    re: /\b(ai|ml|llm|agent|gpt|data|ds)\b|machine|model/i,
+    list: ["Prompt", "Latent", "Vector", "Agentic"],
+  },
+  { re: /react|front|ui|ux|design|css|next/i, list: ["Pixel", "Interface", "Kinetic", "Motion"] },
+  {
+    re: /back|node|go|rust|api|server|infra|devops|cloud|k8s/i,
+    list: ["Systems", "Throughput", "Edge", "Uptime"],
+  },
+  {
+    re: /solid|web3|chain|crypto|contract|zk/i,
+    list: ["Onchain", "Trustless", "Ledger", "Consensus"],
+  },
+  {
+    re: /mobile|ios|android|flutter|swift|kotlin/i,
+    list: ["Pocket", "Handheld", "Tapworthy", "Offline"],
+  },
+  {
+    re: /found|ceo|pm|product|growth|market/i,
+    list: ["Zero-to-One", "Roadmap", "Momentum", "Launch"],
+  },
 ];
 
 function hash(input: string) {
@@ -53,9 +65,12 @@ function hash(input: string) {
 
 export function builderTitle(name: string, stack: string) {
   const seed = hash(`${name.trim().toLowerCase()}::${stack.trim().toLowerCase()}`);
-  const domain = DOMAIN.find(([re]) => re.test(stack));
-  const first = domain ? domain[1][seed % domain[1].length] : PREFIX[seed % PREFIX.length];
-  const second = NOUN[(seed >> 5) % NOUN.length];
+  const match = DOMAIN.find(({ re }) => re.test(stack));
+  const options = match ? match.list : PREFIX;
+  const firstIndex = seed % options.length;
+  const secondIndex = Math.floor(seed / 32) % NOUN.length;
+  const first = options.at(firstIndex) ?? options.at(0) ?? "";
+  const second = NOUN.at(secondIndex) ?? NOUN.at(0) ?? "";
   return `${first} ${second}`;
 }
 
