@@ -5,14 +5,14 @@ export const defaultResources = {
   en: {
     translation: {
       hero: {
-        titlePrefix: "HH GOA",
+        titlePrefix: "Hacker House Goa",
         titleYear: "2026",
         description:
           "The official builder credential for the 2026 gathering on the Konkan coast. Claim your identity, carry the sunset, and show up already belonging.",
         cta: "Build your pass",
       },
       header: {
-        title: "HH GOA",
+        title: "Hacker House Goa",
         year: "2026",
       },
       notes: {
@@ -24,11 +24,11 @@ export const defaultResources = {
         note3Desc: "Drop any crop or format — the pass frames the portrait for you.",
       },
       footer: {
-        title: "HH GOA",
+        title: "Hacker House Goa",
         year: "2026",
-        subtitle: "The official builder pass",
+        subtitle: "Builder Pass by team Nohara Family",
         hashtag: "#FrameInGoa",
-        copyright: "HH-GOA-2026 ©",
+        copyright: "HH-GOA-2026",
       },
       system: {
         notFoundTitle: "404",
@@ -40,7 +40,6 @@ export const defaultResources = {
         goHome: "Go home",
       },
       studio: {
-        eyebrow: "Builder credential",
         titlePrefix: "Craft your",
         titleHighlight: "identity.",
         step1: "Upload identity",
@@ -48,7 +47,7 @@ export const defaultResources = {
         step3: "Issue & share",
         swapPortrait: "Swap portrait",
         dropPortrait: "Drop image or click to browse",
-        supportedFormats: "JPG · PNG · WEBP · HEIC from iPhone",
+        supportedFormats: "JPG · PNG · WEBP · HEIC",
         fullName: "Full name",
         craftStack: "Craft / stack",
         assignedTitle: "Assigned title",

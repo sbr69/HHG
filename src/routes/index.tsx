@@ -4,11 +4,11 @@ import { Toaster } from "@/components/ui/sonner";
 import { GoaBackdrop } from "@/components/GoaBackdrop";
 import { BadgeStudio } from "@/components/BadgeStudio";
 import { Reveal } from "@/components/Reveal";
-import { BrandMarquee, SiteFooter, SiteHeader } from "@/components/SiteChrome";
+import { BrandMarquee, SiteFooter } from "@/components/SiteChrome";
 
-const TITLE = "HH Goa 2026 — Official Builder Pass";
+const TITLE = "Hacker House Goa 2026 — Official Builder Pass";
 const DESC =
-  "Claim your official HH Goa 2026 Builder Pass. Drop a portrait, get a print-grade credential rendered in your browser, and share it to X with #FrameInGoa.";
+  "Claim your official Hacker House Goa 2026 Builder Pass. Drop a portrait, get a print-grade credential rendered in your browser, and share it to X with #FrameInGoa.";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -49,7 +49,6 @@ function Index() {
     <>
       <GoaBackdrop />
       <Toaster position="top-center" theme="dark" />
-      <SiteHeader />
 
       <main className="relative w-full">
         {/* hero */}

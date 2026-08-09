@@ -22,11 +22,10 @@ export function SiteHeader() {
 
 export function BrandMarquee() {
   const items = [
-    { label: "HH GOA 2026", color: "text-amber" },
+    { label: "Hacker House Goa 2026", color: "text-amber" },
     { label: "#FrameInGoa", color: "text-seafoam" },
     { label: "Builder Pass", color: "text-sand" },
-    { label: "HH GOA 2026", color: "text-amber" },
-    { label: "Official Credential", color: "text-ember" },
+    { label: "Hacker House Goa 2026", color: "text-amber" },
   ];
   return (
     <div className="w-full overflow-hidden border-y border-border py-4 bg-background/30 backdrop-blur-sm">

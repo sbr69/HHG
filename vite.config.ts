@@ -1,6 +1,5 @@
 import { defineConfig, loadEnv } from "vite";
 import tailwindcss from "@tailwindcss/vite";
-import tsConfigPaths from "vite-tsconfig-paths";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import react from "@vitejs/plugin-react";
 
@@ -22,7 +21,6 @@ export default defineConfig(async ({ command, mode }) => {
 
   const plugins = [
     tailwindcss(),
-    tsConfigPaths({ projects: ["./tsconfig.json"] }),
     tanstackStart({
       importProtection: {
         behavior: "error",
@@ -45,6 +43,7 @@ export default defineConfig(async ({ command, mode }) => {
   return {
     define: env,
     resolve: {
+      tsconfigPaths: true,
       alias: { "@": `${process.cwd()}/src` },
       dedupe: [
         "react",
