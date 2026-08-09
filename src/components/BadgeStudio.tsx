@@ -129,43 +129,62 @@ export function BadgeStudio() {
 
     try {
       const blob = await exportBadge(getData(), { format: "png", scale: 2 });
-      const file = new File([blob], `hh-goa-pass-${id.toLowerCase()}.png`, { type: "image/png" });
+      const fileName = `hh-goa-pass-${id.toLowerCase()}.png`;
+      const file = new File([blob], fileName, { type: "image/png" });
+
       const nav = navigator as Navigator & {
         canShare?: (d: ShareData) => boolean;
         share?: (d: ShareData) => Promise<void>;
       };
 
+      // Native Mobile Share API (iOS/Android) — auto-attaches image + text directly into Twitter/X app
       if (nav.canShare && nav.share && nav.canShare({ files: [file] })) {
         await nav.share({
           files: [file],
           text,
+          title: "Hacker House Goa 2026 Pass",
         });
         toast.success("Shared!");
         return;
       }
+
+      // Desktop Flow: Open popup synchronously
+      const popup = window.open("about:blank", "_blank");
+
+      // Copy image to clipboard for easy Ctrl+V paste into tweet composer
+      if (typeof ClipboardItem !== "undefined" && navigator.clipboard?.write) {
+        try {
+          await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
+          toast.success("Pass copied to clipboard!", {
+            description: "Press Ctrl+V (Cmd+V) in the tweet window to attach your pass.",
+          });
+        } catch (clipErr) {
+          console.warn("clipboard write error:", clipErr);
+        }
+      }
+
+      // Trigger download fallback
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = fileName;
+      a.click();
+      URL.revokeObjectURL(url);
+
+      const intent = `https://x.com/intent/post?text=${encodeURIComponent(text)}`;
+      if (popup) {
+        popup.location.href = intent;
+      } else {
+        window.location.href = intent;
+      }
     } catch (e) {
       if ((e as Error).name === "AbortError") return;
-      console.error("native share error:", e);
+      console.error("Share error:", e);
+      const intent = `https://x.com/intent/post?text=${encodeURIComponent(text)}`;
+      window.open(intent, "_blank", "noopener,noreferrer");
     } finally {
       setBusy(false);
     }
-
-    // fallback desktop flow: copy pass image to clipboard, open X web composer
-    try {
-      const blob = await exportBadge(getData(), { format: "png", scale: 2 });
-      const file = new File([blob], `hh-goa-pass-${id.toLowerCase()}.png`, { type: "image/png" });
-      if (typeof ClipboardItem !== "undefined" && navigator.clipboard?.write) {
-        await navigator.clipboard.write([new ClipboardItem({ [file.type]: file })]);
-        toast.success("Pass copied to clipboard!", {
-          description: "Paste it directly into your tweet (Ctrl+V / Cmd+V).",
-        });
-      }
-    } catch (e) {
-      console.warn("clipboard write error:", e);
-    }
-
-    const intent = `https://x.com/intent/post?text=${encodeURIComponent(text)}`;
-    window.open(intent, "_blank", "noopener,noreferrer");
   };
 
   const reset = () => {
@@ -259,35 +278,35 @@ export function BadgeStudio() {
             {/* 03 — issue */}
             <div>
               <StepLabel n="03" label={t("studio.step3")} />
-              <div className="flex flex-col gap-3.5 sm:flex-row">
+              <div className="flex flex-col gap-2.5 sm:flex-row">
                 <button
                   onClick={() => void shareToX()}
-                  className="btn-blaze flex-1 rounded-xl px-5 py-5 text-phi-base font-bold uppercase tracking-[0.18em]"
+                  className="btn-blaze rounded-xl px-3 py-3.5 text-phi-sm font-bold uppercase tracking-[0.14em]"
                 >
-                  <span className="inline-flex items-center justify-center gap-2">
-                    {t("studio.shareToX")} <ArrowUpRight className="size-5" />
+                  <span className="inline-flex items-center justify-center gap-1.5">
+                    {t("studio.shareToX")} <ArrowUpRight className="size-4" />
                   </span>
                 </button>
                 <button
                   onClick={() => void save("png")}
-                  className="btn-ghost-seafoam flex items-center justify-center gap-2 px-4.5 py-5 text-phi-base font-bold uppercase tracking-[0.18em]"
+                  className="btn-ghost-seafoam flex items-center justify-center gap-2 px-3.5 py-3.5 text-phi-sm font-bold uppercase tracking-[0.16em]"
                 >
-                  <Download className="size-5" />
+                  <Download className="size-4" />
                   PNG
                 </button>
                 <button
                   onClick={() => void save("jpg")}
-                  className="btn-ghost flex items-center justify-center gap-2 px-4.5 py-5 text-phi-base font-bold uppercase tracking-[0.18em]"
+                  className="btn-ghost flex items-center justify-center gap-2 px-3.5 py-3.5 text-phi-sm font-bold uppercase tracking-[0.16em]"
                 >
-                  <ImageDown className="size-5" />
+                  <ImageDown className="size-4" />
                   JPG
                 </button>
                 <button
                   onClick={reset}
                   aria-label={t("studio.startOver")}
-                  className="btn-ghost-ember grid place-items-center px-4 py-5"
+                  className="btn-ghost-ember grid place-items-center px-3.5 py-3.5"
                 >
-                  <RotateCcw className="size-5" />
+                  <RotateCcw className="size-4" />
                 </button>
               </div>
             </div>

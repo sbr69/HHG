@@ -51,27 +51,21 @@ function Index() {
       <Toaster position="top-center" theme="dark" />
 
       <main className="relative w-full">
-        {/* hero */}
-        <section className="mx-auto flex w-full max-w-7xl flex-col justify-end px-5 pb-14 pt-20 sm:px-8 md:pb-24 md:pt-32">
+        {/* Hero title header */}
+        <section className="mx-auto flex w-full max-w-7xl flex-col px-5 pt-16 pb-6 sm:px-8 md:pt-24">
           <Reveal>
-            <h1 className="font-display text-[clamp(3.5rem,15vw,11rem)] italic leading-[0.84] tracking-tight text-coffee drop-shadow-lg">
+            <h1 className="font-display text-[clamp(3.5rem,12vw,9rem)] italic leading-[0.84] tracking-tight text-coffee drop-shadow-lg">
               {t("hero.titlePrefix")}
               <br />
               <span className="text-ember">{t("hero.titleYear")}</span>
             </h1>
           </Reveal>
           <Reveal delay={120}>
-            <div className="mt-10 flex flex-col gap-8 md:flex-row md:items-end md:justify-end">
-              <a
-                href="#studio"
-                className="group inline-flex shrink-0 items-center gap-4"
-                aria-label="Scroll to the builder pass studio"
-              >
-                <span className="h-px w-12 bg-ember transition-all duration-500 group-hover:w-24 group-hover:bg-amber" />
-                <span className="font-display text-2xl italic text-amber transition-colors group-hover:text-amber-hover">
-                  {t("hero.cta")}
-                </span>
-              </a>
+            <div className="mt-8 flex items-center justify-end gap-4 pr-12 md:pr-24">
+              <span className="h-px w-12 bg-ember" />
+              <span className="font-display text-2xl italic text-amber select-none">
+                {t("hero.cta")}
+              </span>
             </div>
           </Reveal>
         </section>

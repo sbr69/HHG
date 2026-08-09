@@ -207,10 +207,6 @@ export function renderBadge(canvas: HTMLCanvasElement, d: BadgeData, scale = 1) 
   const baseline = py + ph - 62;
 
   ctx.textBaseline = "alphabetic";
-  ctx.fillStyle = AMBER;
-  ctx.font = SANS(16, 600);
-  letterSpaced(ctx, "BUILDER PASS · 03—07 FEB", ix, baseline - 158, 4.5);
-
   const name = (d.name || "Your Name").trim();
   const nameSize = fitText(ctx, name, iw, 86, (s) => SERIF(s, true), 34);
   ctx.fillStyle = PAPER;
