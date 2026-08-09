@@ -8,7 +8,7 @@ export const defaultResources = {
         titlePrefix: "Hacker House Goa",
         titleYear: "2026",
         description:
-          "The official builder credential for the 2026 gathering on the Konkan coast. Claim your identity, carry the sunset, and show up already belonging.",
+          "The builder credential for the 2026 gathering on the Konkan coast. Claim your identity, carry the sunset, and show up already belonging.",
         cta: "Build your pass",
       },
       header: {

@@ -3,7 +3,15 @@ import { ArrowUpRight, Download, ImageDown, Loader2, RotateCcw, Upload } from "l
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import "@/lib/i18n";
-import { CARD_H, CARD_W, exportBadge, getFrame, loadFrame, renderBadge, type BadgeData } from "@/lib/badge";
+import {
+  CARD_H,
+  CARD_W,
+  exportBadge,
+  getFrame,
+  loadFrame,
+  renderBadge,
+  type BadgeData,
+} from "@/lib/badge";
 import { isSupportedImage, loadImage, type DecodedImage } from "@/lib/image-input";
 import { builderId, builderTitle } from "@/lib/titles";
 import { Reveal } from "@/components/Reveal";
@@ -18,8 +26,18 @@ export function BadgeStudio() {
   const frameRef = useRef<HTMLImageElement | null>(null);
   const { animate } = useMotion();
 
-  const [name, setName] = useState("");
-  const [stack, setStack] = useState("");
+  const [name, setName] = useState(() => {
+    if (typeof window !== "undefined") {
+      return new URLSearchParams(window.location.search).get("name") || "";
+    }
+    return "";
+  });
+  const [stack, setStack] = useState(() => {
+    if (typeof window !== "undefined") {
+      return new URLSearchParams(window.location.search).get("stack") || "";
+    }
+    return "";
+  });
   const [hasPhoto, setHasPhoto] = useState(false);
   const [busy, setBusy] = useState(false);
   const [dragging, setDragging] = useState(false);
@@ -127,6 +145,16 @@ export function BadgeStudio() {
     setBusy(true);
     const text = CAPTION(title);
 
+    const params = new URLSearchParams();
+    if (name) params.set("name", name);
+    if (stack) params.set("stack", stack);
+    const shareUrl =
+      typeof window !== "undefined"
+        ? `${window.location.origin}${window.location.pathname}${params.toString() ? "?" + params.toString() : ""}`
+        : "https://hhgoa2026.com";
+
+    const intent = `https://x.com/intent/post?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`;
+
     try {
       const blob = await exportBadge(getData(), { format: "png", scale: 2 });
       const fileName = `hh-goa-pass-${id.toLowerCase()}.png`;
@@ -142,6 +170,7 @@ export function BadgeStudio() {
         await nav.share({
           files: [file],
           text,
+          url: shareUrl,
           title: "Hacker House Goa 2026 Pass",
         });
         toast.success("Shared!");
@@ -171,7 +200,6 @@ export function BadgeStudio() {
       a.click();
       URL.revokeObjectURL(url);
 
-      const intent = `https://x.com/intent/post?text=${encodeURIComponent(text)}`;
       if (popup) {
         popup.location.href = intent;
       } else {
@@ -180,7 +208,6 @@ export function BadgeStudio() {
     } catch (e) {
       if ((e as Error).name === "AbortError") return;
       console.error("Share error:", e);
-      const intent = `https://x.com/intent/post?text=${encodeURIComponent(text)}`;
       window.open(intent, "_blank", "noopener,noreferrer");
     } finally {
       setBusy(false);
@@ -204,7 +231,8 @@ export function BadgeStudio() {
         <div className="order-2 space-y-8 sm:space-y-12 lg:order-1">
           <Reveal>
             <h2 className="font-display text-[clamp(2rem,6.5vw,4.5rem)] leading-[0.88] tracking-tight text-coffee drop-shadow-md">
-              {t("studio.titlePrefix")} <span className="italic text-ember">{t("studio.titleHighlight")}</span>
+              {t("studio.titlePrefix")}{" "}
+              <span className="italic text-ember">{t("studio.titleHighlight")}</span>
             </h2>
           </Reveal>
 
@@ -241,7 +269,9 @@ export function BadgeStudio() {
                 <span className="text-phi-md font-semibold text-sand sm:text-phi-lg">
                   {hasPhoto ? t("studio.swapPortrait") : t("studio.dropPortrait")}
                 </span>
-                <span className="text-phi-sm mt-1.5 font-medium uppercase tracking-wider text-taupe sm:mt-2.5 sm:text-phi-base">{t("studio.supportedFormats")}</span>
+                <span className="text-phi-sm mt-1.5 font-medium uppercase tracking-wider text-taupe sm:mt-2.5 sm:text-phi-base">
+                  {t("studio.supportedFormats")}
+                </span>
               </label>
             </div>
 
@@ -267,8 +297,15 @@ export function BadgeStudio() {
 
               <div className="mt-6 sm:mt-7">
                 <div className="min-w-0">
-                  <p className="text-phi-md mb-2 block font-semibold uppercase tracking-[0.2em] text-white sm:text-phi-lg sm:mb-2.5">{t("studio.assignedTitle")}</p>
-                  <p className="truncate font-display text-phi-2xl italic leading-tight pb-2.5 border-b-2 border-black sm:text-phi-3xl sm:pb-3" style={{ color: "rgb(255, 200, 89)" }}>{title}</p>
+                  <p className="text-phi-md mb-2 block font-semibold uppercase tracking-[0.2em] text-white sm:text-phi-lg sm:mb-2.5">
+                    {t("studio.assignedTitle")}
+                  </p>
+                  <p
+                    className="truncate font-display text-phi-2xl italic leading-tight pb-2.5 border-b-2 border-black sm:text-phi-3xl sm:pb-3"
+                    style={{ color: "rgb(255, 200, 89)" }}
+                  >
+                    {title}
+                  </p>
                 </div>
               </div>
             </div>
@@ -372,8 +409,12 @@ export function BadgeStudio() {
 function StepLabel({ n, label }: { n: string; label: string }) {
   return (
     <div className="mb-4 flex items-center gap-3 sm:mb-6 sm:gap-4">
-      <span className="font-display text-phi-2xl italic text-amber font-semibold sm:text-phi-3xl">{n}</span>
-      <span className="text-phi-lg font-bold text-seafoam uppercase tracking-[0.18em] sm:text-phi-xl sm:tracking-[0.2em]">{label}</span>
+      <span className="font-display text-phi-2xl italic text-amber font-semibold sm:text-phi-3xl">
+        {n}
+      </span>
+      <span className="text-phi-lg font-bold text-seafoam uppercase tracking-[0.18em] sm:text-phi-xl sm:tracking-[0.2em]">
+        {label}
+      </span>
     </div>
   );
 }

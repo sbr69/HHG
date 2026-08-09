@@ -6,9 +6,9 @@ import { BadgeStudio } from "@/components/BadgeStudio";
 import { Reveal } from "@/components/Reveal";
 import { BrandMarquee, SiteFooter } from "@/components/SiteChrome";
 
-const TITLE = "Hacker House Goa 2026 — Official Builder Pass";
+const TITLE = "Hacker House Goa 2026 — Builder Pass";
 const DESC =
-  "Claim your official Hacker House Goa 2026 Builder Pass. Drop a portrait, get a print-grade credential rendered in your browser, and share it to X with #FrameInGoa.";
+  "Claim your Hacker House Goa 2026 Builder Pass. Drop a portrait, get a print-grade credential rendered in your browser, and share it to X with #FrameInGoa.";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -20,9 +20,13 @@ export const Route = createFileRoute("/")({
       { property: "og:description", content: DESC },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "/" },
+      { property: "og:image", content: "/goa-frame-new.webp" },
+      { property: "og:image:width", content: "1086" },
+      { property: "og:image:height", content: "1448" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: TITLE },
       { name: "twitter:description", content: DESC },
+      { name: "twitter:image", content: "/goa-frame-new.webp" },
     ],
     links: [{ rel: "canonical", href: "/" }],
     scripts: [
