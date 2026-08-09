@@ -202,17 +202,7 @@ export function BadgeStudio() {
     const isMobile =
       typeof navigator !== "undefined" && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     const text = CAPTION();
-
-    const params = new URLSearchParams();
-    if (name) params.set("name", name);
-    if (stack) params.set("stack", stack);
-    const shareUrl =
-      typeof window !== "undefined"
-        ? `${window.location.origin}${window.location.pathname}${params.toString() ? "?" + params.toString() : ""}`
-        : "https://hhgoa2026.com";
-
     const webIntent = `https://x.com/intent/post?text=${encodeURIComponent(text)}`;
-    const appDeepLink = `twitter://post?message=${encodeURIComponent(text)}`;
 
     // 1. Synchronously open popup window on Desktop FIRST so browser popup blockers do not block it
     let popup: Window | null = null;
@@ -229,8 +219,33 @@ export function BadgeStudio() {
     try {
       const blob = await exportBadge(getData(), { format: "png", scale: 2 });
       const fileName = "BuildersPass.png";
+      const file = new File([blob], fileName, { type: "image/png" });
 
-      // Copy image to clipboard for easy paste into tweet composer
+      const nav = navigator as Navigator & {
+        canShare?: (d: ShareData) => boolean;
+        share?: (d: ShareData) => Promise<void>;
+      };
+
+      // Mobile Flow: Use Native Share API to attach both image file and pre-filled text into X app
+      if (isMobile) {
+        if (nav.canShare && nav.share && nav.canShare({ files: [file] })) {
+          try {
+            await nav.share({
+              files: [file],
+              text,
+            });
+            toast.success("Shared!");
+            return;
+          } catch (shareErr) {
+            if ((shareErr as Error).name === "AbortError") return;
+          }
+        }
+        // Fallback: Open X app / x.com via Universal Link with pre-filled text
+        window.location.href = webIntent;
+        return;
+      }
+
+      // Desktop Flow: Copy image to clipboard for easy Ctrl+V paste into tweet composer
       if (typeof ClipboardItem !== "undefined" && navigator.clipboard?.write) {
         try {
           await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
@@ -242,7 +257,7 @@ export function BadgeStudio() {
         }
       }
 
-      // Trigger download fallback
+      // Trigger download fallback on desktop
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -250,22 +265,10 @@ export function BadgeStudio() {
       a.click();
       URL.revokeObjectURL(url);
 
-      if (isMobile) {
-        // Mobile flow: attempt X app deep link, fallback to web intent
-        const start = Date.now();
-        window.location.href = appDeepLink;
-        setTimeout(() => {
-          if (Date.now() - start < 2000) {
-            window.location.href = webIntent;
-          }
-        }, 1200);
+      if (popup && !popup.closed) {
+        popup.location.href = webIntent;
       } else {
-        // Desktop flow: redirect opened tab to x.com web intent
-        if (popup && !popup.closed) {
-          popup.location.href = webIntent;
-        } else {
-          window.location.href = webIntent;
-        }
+        window.location.href = webIntent;
       }
     } catch (e) {
       if (popup && !popup.closed) popup.close();
