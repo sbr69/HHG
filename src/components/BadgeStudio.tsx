@@ -199,7 +199,8 @@ export function BadgeStudio() {
   };
 
   const shareToX = async () => {
-    setBusy(true);
+    const isMobile =
+      typeof navigator !== "undefined" && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     const text = CAPTION(title);
 
     const params = new URLSearchParams();
@@ -210,39 +211,31 @@ export function BadgeStudio() {
         ? `${window.location.origin}${window.location.pathname}${params.toString() ? "?" + params.toString() : ""}`
         : "https://hhgoa2026.com";
 
-    const intent = `https://x.com/intent/post?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`;
+    const webIntent = `https://x.com/intent/post?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`;
+    const appDeepLink = `twitter://post?message=${encodeURIComponent(`${text}\n\n${shareUrl}`)}`;
+
+    // 1. Synchronously open popup window on Desktop FIRST so browser popup blockers do not block it
+    let popup: Window | null = null;
+    if (!isMobile) {
+      try {
+        popup = window.open("about:blank", "_blank");
+      } catch (err) {
+        console.warn("popup open error:", err);
+      }
+    }
+
+    setBusy(true);
 
     try {
       const blob = await exportBadge(getData(), { format: "png", scale: 2 });
       const fileName = `hh-goa-pass-${id.toLowerCase()}.png`;
-      const file = new File([blob], fileName, { type: "image/png" });
 
-      const nav = navigator as Navigator & {
-        canShare?: (d: ShareData) => boolean;
-        share?: (d: ShareData) => Promise<void>;
-      };
-
-      // Native Mobile Share API (iOS/Android) — auto-attaches image + text directly into Twitter/X app
-      if (nav.canShare && nav.share && nav.canShare({ files: [file] })) {
-        await nav.share({
-          files: [file],
-          text,
-          url: shareUrl,
-          title: "Hacker House Goa 2026 Pass",
-        });
-        toast.success("Shared!");
-        return;
-      }
-
-      // Desktop Flow: Open popup synchronously
-      const popup = window.open("about:blank", "_blank");
-
-      // Copy image to clipboard for easy Ctrl+V paste into tweet composer
+      // Copy image to clipboard for easy paste into tweet composer
       if (typeof ClipboardItem !== "undefined" && navigator.clipboard?.write) {
         try {
           await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
           toast.success("Pass copied to clipboard!", {
-            description: "Press Ctrl+V (Cmd+V) in the tweet window to attach your pass.",
+            description: "Press paste (Ctrl+V / Cmd+V) to attach your pass.",
           });
         } catch (clipErr) {
           console.warn("clipboard write error:", clipErr);
@@ -257,15 +250,32 @@ export function BadgeStudio() {
       a.click();
       URL.revokeObjectURL(url);
 
-      if (popup) {
-        popup.location.href = intent;
+      if (isMobile) {
+        // Mobile flow: attempt X app deep link, fallback to web intent
+        const start = Date.now();
+        window.location.href = appDeepLink;
+        setTimeout(() => {
+          if (Date.now() - start < 2000) {
+            window.location.href = webIntent;
+          }
+        }, 1200);
       } else {
-        window.location.href = intent;
+        // Desktop flow: redirect opened tab to x.com web intent
+        if (popup && !popup.closed) {
+          popup.location.href = webIntent;
+        } else {
+          window.location.href = webIntent;
+        }
       }
     } catch (e) {
+      if (popup && !popup.closed) popup.close();
       if ((e as Error).name === "AbortError") return;
       console.error("Share error:", e);
-      window.open(intent, "_blank", "noopener,noreferrer");
+      if (isMobile) {
+        window.location.href = webIntent;
+      } else {
+        window.open(webIntent, "_blank", "noopener,noreferrer");
+      }
     } finally {
       setBusy(false);
     }
