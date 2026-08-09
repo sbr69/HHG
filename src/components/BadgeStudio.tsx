@@ -31,8 +31,8 @@ import { builderId, builderTitle } from "@/lib/titles";
 import { Reveal } from "@/components/Reveal";
 import { useMotion } from "@/hooks/useMotionPreference";
 
-const CAPTION = (title: string) =>
-  `I just claimed my HH Goa 2026 Builder Pass — "${title}". Sun, surf and shipping. 🌅\n\n#FrameInGoa`;
+const CAPTION = () =>
+  `Hacker House Goa 2026 is calling.\nJust claimed my Builder Pass and I’m ready for what’s ahead.\n\nGet yours here: hhg-builder-pass.vercel.app\n\n#FrameInGoa #HHGoa2026 #Hackathon`;
 
 export function BadgeStudio() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -186,7 +186,7 @@ export function BadgeStudio() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `hh-goa-pass-${id.toLowerCase()}.${fmt}`;
+      a.download = `BuildersPass.${fmt}`;
       a.click();
       URL.revokeObjectURL(url);
       toast.success(`Pass saved as ${fmt.toUpperCase()}`);
@@ -201,7 +201,7 @@ export function BadgeStudio() {
   const shareToX = async () => {
     const isMobile =
       typeof navigator !== "undefined" && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    const text = CAPTION(title);
+    const text = CAPTION();
 
     const params = new URLSearchParams();
     if (name) params.set("name", name);
@@ -211,8 +211,8 @@ export function BadgeStudio() {
         ? `${window.location.origin}${window.location.pathname}${params.toString() ? "?" + params.toString() : ""}`
         : "https://hhgoa2026.com";
 
-    const webIntent = `https://x.com/intent/post?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`;
-    const appDeepLink = `twitter://post?message=${encodeURIComponent(`${text}\n\n${shareUrl}`)}`;
+    const webIntent = `https://x.com/intent/post?text=${encodeURIComponent(text)}`;
+    const appDeepLink = `twitter://post?message=${encodeURIComponent(text)}`;
 
     // 1. Synchronously open popup window on Desktop FIRST so browser popup blockers do not block it
     let popup: Window | null = null;
@@ -228,7 +228,7 @@ export function BadgeStudio() {
 
     try {
       const blob = await exportBadge(getData(), { format: "png", scale: 2 });
-      const fileName = `hh-goa-pass-${id.toLowerCase()}.png`;
+      const fileName = "BuildersPass.png";
 
       // Copy image to clipboard for easy paste into tweet composer
       if (typeof ClipboardItem !== "undefined" && navigator.clipboard?.write) {
