@@ -3,7 +3,7 @@ import { ArrowUpRight, Download, ImageDown, Loader2, RotateCcw, Upload } from "l
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import "@/lib/i18n";
-import { CARD_H, CARD_W, exportBadge, loadFrame, renderBadge, type BadgeData } from "@/lib/badge";
+import { CARD_H, CARD_W, exportBadge, getFrame, loadFrame, renderBadge, type BadgeData } from "@/lib/badge";
 import { isSupportedImage, loadImage, type DecodedImage } from "@/lib/image-input";
 import { builderId, builderTitle } from "@/lib/titles";
 import { Reveal } from "@/components/Reveal";
@@ -24,7 +24,7 @@ export function BadgeStudio() {
   const [busy, setBusy] = useState(false);
   const [dragging, setDragging] = useState(false);
   const [fontsReady, setFontsReady] = useState(false);
-  const [frameReady, setFrameReady] = useState(false);
+  const [frameReady, setFrameReady] = useState(() => !!getFrame());
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
 
   const title = builderTitle(name || "builder", stack || "builder");
@@ -206,10 +206,10 @@ export function BadgeStudio() {
                   setDragging(false);
                   void handleFile(e.dataTransfer.files?.[0]);
                 }}
-                className={`group relative flex h-44 w-full cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed transition-all duration-500 ${
+                className={`group relative flex h-44 w-full cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed transition-all duration-500 ${
                   dragging
-                    ? "scale-[1.01] border-ember bg-ember/15"
-                    : "border-border hover:border-ember/60 hover:bg-white/5"
+                    ? "scale-[1.01] border-black bg-black/40"
+                    : "border-black bg-black/20 hover:border-black hover:bg-black/35"
                 }`}
               >
                 <input
@@ -248,10 +248,10 @@ export function BadgeStudio() {
                 />
               </div>
 
-              <div className="mt-8 border-t border-border pt-6">
+              <div className="mt-7">
                 <div className="min-w-0">
                   <p className="text-phi-base mb-2.5 block font-semibold uppercase tracking-[0.2em] text-seafoam">{t("studio.assignedTitle")}</p>
-                  <p className="truncate font-display text-phi-2xl italic text-ember leading-tight">{title}</p>
+                  <p className="truncate font-display text-phi-2xl italic text-ember leading-tight pb-3 border-b-2 border-black">{title}</p>
                 </div>
               </div>
             </div>
@@ -330,6 +330,16 @@ export function BadgeStudio() {
                   style={{ aspectRatio: `${CARD_W}/${CARD_H}` }}
                   aria-label="Your HH Goa 2026 builder pass preview"
                 />
+                <img
+                  id="goa-frame-img"
+                  src="/goa-frame-new.webp"
+                  alt=""
+                  className="absolute inset-0 w-full h-full pointer-events-none"
+                  onLoad={() => {
+                    setFrameReady(true);
+                    redraw();
+                  }}
+                />
                 {busy && (
                   <div className="absolute inset-0 grid place-items-center bg-background/70 backdrop-blur-sm">
                     <Loader2 className="size-7 animate-spin text-ember" />
@@ -349,7 +359,6 @@ function StepLabel({ n, label }: { n: string; label: string }) {
     <div className="mb-6 flex items-center gap-4">
       <span className="font-display text-phi-2xl italic text-amber font-semibold">{n}</span>
       <span className="text-phi-lg font-bold text-seafoam uppercase tracking-[0.2em]">{label}</span>
-      <span className="h-px flex-1 bg-border/60" />
     </div>
   );
 }

@@ -9,7 +9,7 @@ export function GoaBackdrop() {
       className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-background"
     >
       <img
-        src="/goa-beach.webp"
+        src="/goa-beach-new.jpg"
         alt=""
         className="absolute inset-0 h-full w-full object-cover object-bottom"
       />

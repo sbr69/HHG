@@ -207,7 +207,7 @@
     width: 100%;
     background: transparent;
     border: 0;
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 2px solid #000000;
     padding: 0.85rem 0;
     outline: none;
     color: var(--coffee);
@@ -215,7 +215,7 @@
   }
 
   .field-line:focus {
-    border-bottom-color: #ff6b35;
+    border-bottom-color: #000000;
   }
 
   .field-line::placeholder {

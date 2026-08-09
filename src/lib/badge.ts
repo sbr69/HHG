@@ -6,8 +6,8 @@
 const FRAME_OLD_SRC = "/goa-frame.webp";
 const WIN_OLD = { x: 140, y: 236, w: 790, h: 846 };
 
-// New PNG frame configuration (transparent inner window)
-const FRAME_NEW_SRC = "/goa-frame-new.png";
+// New WebP frame configuration (transparent inner window, fast loading)
+const FRAME_NEW_SRC = "/goa-frame-new.webp";
 const WIN_NEW = { x: 129, y: 184, w: 823, h: 922 };
 
 // Active frame configuration
@@ -42,8 +42,21 @@ const SANS = (s: number, w = 400) => `${w} ${s}px 'Work Sans', system-ui, sans-s
 let frameImg: HTMLImageElement | null = null;
 let framePromise: Promise<HTMLImageElement> | null = null;
 
-/** Preload the frame artwork once; renders fall back to a flat card until ready. */
+export function getFrame(): HTMLImageElement | null {
+  if (typeof document !== "undefined") {
+    const domImg = document.getElementById("goa-frame-img") as HTMLImageElement | null;
+    if (domImg && domImg.complete && domImg.naturalWidth !== 0) {
+      return domImg;
+    }
+  }
+  return frameImg;
+}
+
+/** Preload the frame artwork once. */
 export function loadFrame(): Promise<HTMLImageElement> {
+  const domImg = getFrame();
+  if (domImg) return Promise.resolve(domImg);
+
   if (framePromise) return framePromise;
   framePromise = new Promise((resolve, reject) => {
     const img = new Image();
@@ -54,8 +67,16 @@ export function loadFrame(): Promise<HTMLImageElement> {
     };
     img.onerror = reject;
     img.src = FRAME_SRC;
+    if (img.complete && img.naturalWidth !== 0) {
+      frameImg = img;
+      resolve(img);
+    }
   });
   return framePromise;
+}
+
+if (typeof window !== "undefined") {
+  void loadFrame();
 }
 
 function roundRect(
