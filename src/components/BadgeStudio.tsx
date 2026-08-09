@@ -321,11 +321,10 @@ export function BadgeStudio() {
                   setDragging(false);
                   void handleFile(e.dataTransfer.files?.[0]);
                 }}
-                className={`group relative flex h-36 w-full cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed transition-all duration-500 sm:h-44 ${
-                  dragging
+                className={`group relative flex h-36 w-full cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed transition-all duration-500 sm:h-44 ${dragging
                     ? "scale-[1.01] border-black bg-black/40"
                     : "border-black bg-black/20 hover:border-black hover:bg-black/35"
-                }`}
+                  }`}
               >
                 <input
                   type="file"
