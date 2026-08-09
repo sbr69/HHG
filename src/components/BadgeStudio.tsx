@@ -219,27 +219,27 @@ export function BadgeStudio() {
     try {
       const blob = await exportBadge(getData(), { format: "png", scale: 2 });
       const fileName = "BuildersPass.png";
+      const file = new File([blob], fileName, { type: "image/png" });
+      const nav = navigator as Navigator & {
+        canShare?: (d: ShareData) => boolean;
+        share?: (d: ShareData) => Promise<void>;
+      };
 
-      // Mobile Flow: Directly redirect to X intent (opens X app directly if permitted)
+      // Mobile Flow: Use Web Share API to attach both image file and pre-filled text into X app
       if (isMobile) {
-        if (typeof ClipboardItem !== "undefined" && navigator.clipboard?.write) {
+        if (nav.canShare && nav.share && nav.canShare({ files: [file] })) {
           try {
-            await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
-            toast.success("Pass copied to clipboard!", {
-              description: "Paste in X to attach your pass.",
+            await nav.share({
+              files: [file],
+              text,
             });
-          } catch (clipErr) {
-            console.warn("clipboard write error:", clipErr);
+            toast.success("Shared!");
+            return;
+          } catch (shareErr) {
+            if ((shareErr as Error).name === "AbortError") return;
           }
         }
-
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = fileName;
-        a.click();
-        URL.revokeObjectURL(url);
-
+        // Fallback if Web Share API is not supported on device
         window.location.href = webIntent;
         return;
       }
