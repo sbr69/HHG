@@ -60,6 +60,8 @@ export const defaultResources = {
         holder: "Holder",
         unassigned: "Unassigned",
         startOver: "Start over",
+        adjustPosition: "Position & Scale",
+        resetFit: "Reset Fit",
       },
     },
   },

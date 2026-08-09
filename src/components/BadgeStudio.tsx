@@ -1,5 +1,19 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ArrowUpRight, Download, ImageDown, Loader2, RotateCcw, Upload } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowLeft,
+  ArrowRight,
+  ArrowUp,
+  ArrowUpRight,
+  Download,
+  ImageDown,
+  Loader2,
+  Move,
+  RotateCcw,
+  Upload,
+  ZoomIn,
+  ZoomOut,
+} from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import "@/lib/i18n";
@@ -45,6 +59,19 @@ export function BadgeStudio() {
   const [frameReady, setFrameReady] = useState(() => !!getFrame());
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
 
+  // Image position and zoom adjustment states
+  const [zoom, setZoom] = useState(1);
+  const [offsetX, setOffsetX] = useState(0);
+  const [offsetY, setOffsetY] = useState(0);
+
+  const isDraggingImageRef = useRef(false);
+  const dragStartRef = useRef<{ x: number; y: number; ox: number; oy: number }>({
+    x: 0,
+    y: 0,
+    ox: 0,
+    oy: 0,
+  });
+
   const title = builderTitle(name || "builder", stack || "builder");
   const id = builderId(name);
 
@@ -85,8 +112,11 @@ export function BadgeStudio() {
       photo: photoRef.current?.source ?? null,
       photoW: photoRef.current?.width ?? 0,
       photoH: photoRef.current?.height ?? 0,
+      zoom,
+      offsetX,
+      offsetY,
     }),
-    [name, stack, title, id],
+    [name, stack, title, id, zoom, offsetX, offsetY],
   );
 
   const redraw = useCallback(() => {
@@ -99,6 +129,30 @@ export function BadgeStudio() {
     redraw();
   }, [redraw, frameReady, fontsReady]);
 
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!hasPhoto) return;
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    isDraggingImageRef.current = true;
+    dragStartRef.current = {
+      x: e.clientX,
+      y: e.clientY,
+      ox: offsetX,
+      oy: offsetY,
+    };
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isDraggingImageRef.current) return;
+    const dx = (e.clientX - dragStartRef.current.x) * 2.2;
+    const dy = (e.clientY - dragStartRef.current.y) * 2.2;
+    setOffsetX(dragStartRef.current.ox + dx);
+    setOffsetY(dragStartRef.current.oy + dy);
+  };
+
+  const handlePointerUp = () => {
+    isDraggingImageRef.current = false;
+  };
+
   const handleFile = async (f?: File) => {
     if (!f) return;
     if (!isSupportedImage(f)) {
@@ -109,14 +163,17 @@ export function BadgeStudio() {
     }
     setBusy(true);
     try {
-      const dec = await loadImage(f);
-      photoRef.current = dec;
+      const decoded = await loadImage(f);
+      photoRef.current = decoded;
       setHasPhoto(true);
+      setZoom(1);
+      setOffsetX(0);
+      setOffsetY(0);
       redraw();
-      toast.success("Photo attached");
-    } catch (err) {
-      console.error(err);
-      toast.error("Could not load photo");
+      toast.success("Portrait loaded into pass frame!");
+    } catch (e) {
+      console.error(e);
+      toast.error("Could not load image");
     } finally {
       setBusy(false);
     }
@@ -219,6 +276,9 @@ export function BadgeStudio() {
     setHasPhoto(false);
     setName("");
     setStack("");
+    setZoom(1);
+    setOffsetX(0);
+    setOffsetY(0);
     toast("Pass cleared");
   };
 
@@ -273,6 +333,86 @@ export function BadgeStudio() {
                   {t("studio.supportedFormats")}
                 </span>
               </label>
+
+              {hasPhoto && (
+                <div className="mt-3.5 space-y-3 rounded-2xl border border-black/40 bg-black/30 p-3.5 backdrop-blur-md transition-all">
+                  <div className="flex items-center justify-between">
+                    <span className="text-phi-xs font-bold uppercase tracking-[0.16em] text-seafoam">
+                      {t("studio.adjustPosition")}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setZoom(1);
+                        setOffsetX(0);
+                        setOffsetY(0);
+                      }}
+                      className="text-phi-xs font-bold uppercase tracking-wider text-amber hover:text-sand transition-colors"
+                    >
+                      {t("studio.resetFit")}
+                    </button>
+                  </div>
+
+                  {/* Zoom slider */}
+                  <div className="flex items-center gap-2.5">
+                    <ZoomOut className="size-4 shrink-0 text-taupe" />
+                    <input
+                      type="range"
+                      min="0.7"
+                      max="2.5"
+                      step="0.05"
+                      value={zoom}
+                      onChange={(e) => setZoom(parseFloat(e.target.value))}
+                      className="h-1.5 w-full cursor-pointer appearance-none rounded-lg bg-black/50 accent-ember"
+                    />
+                    <ZoomIn className="size-4 shrink-0 text-taupe" />
+                    <span className="w-11 text-right text-phi-xs font-semibold font-mono text-sand">
+                      {Math.round(zoom * 100)}%
+                    </span>
+                  </div>
+
+                  {/* Directional Nudge pan controls */}
+                  <div className="flex items-center justify-between pt-1">
+                    <span className="text-phi-xs text-taupe flex items-center gap-1.5">
+                      <Move className="size-3.5 text-ember" /> Drag preview or use pan arrows
+                    </span>
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => setOffsetX((x) => x - 15)}
+                        className="grid size-7 place-items-center rounded-lg bg-black/40 text-sand transition-colors hover:bg-black/70"
+                        title="Shift Left"
+                      >
+                        <ArrowLeft className="size-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setOffsetY((y) => y - 15)}
+                        className="grid size-7 place-items-center rounded-lg bg-black/40 text-sand transition-colors hover:bg-black/70"
+                        title="Shift Up"
+                      >
+                        <ArrowUp className="size-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setOffsetY((y) => y + 15)}
+                        className="grid size-7 place-items-center rounded-lg bg-black/40 text-sand transition-colors hover:bg-black/70"
+                        title="Shift Down"
+                      >
+                        <ArrowDown className="size-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setOffsetX((x) => x + 15)}
+                        className="grid size-7 place-items-center rounded-lg bg-black/40 text-sand transition-colors hover:bg-black/70"
+                        title="Shift Right"
+                      >
+                        <ArrowRight className="size-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* 02 — details */}
@@ -353,15 +493,22 @@ export function BadgeStudio() {
           <Reveal delay={160}>
             <div className="mx-auto max-w-85 sm:max-w-md lg:max-w-none">
               <div
-                className="group relative transition-transform duration-500"
+                className={`group relative transition-transform duration-500 ${hasPhoto ? "cursor-grab" : ""}`}
+                onPointerDown={handlePointerDown}
+                onPointerMove={handlePointerMove}
+                onPointerUp={handlePointerUp}
+                onPointerCancel={handlePointerUp}
                 onMouseMove={(e) => {
-                  if (!animate) return;
+                  if (!animate || isDraggingImageRef.current) return;
                   const rect = e.currentTarget.getBoundingClientRect();
                   const px = (e.clientX - rect.left) / rect.width - 0.5;
                   const py = (e.clientY - rect.top) / rect.height - 0.5;
                   setTilt({ x: -py * 7, y: px * 7 });
                 }}
-                onMouseLeave={() => setTilt({ x: 0, y: 0 })}
+                onMouseLeave={() => {
+                  setTilt({ x: 0, y: 0 });
+                  isDraggingImageRef.current = false;
+                }}
                 style={{
                   transform: animate ? `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)` : undefined,
                   transformStyle: "preserve-3d",
@@ -385,7 +532,7 @@ export function BadgeStudio() {
                     id="goa-frame-img"
                     src="/goa-frame-new.webp"
                     alt=""
-                    className="absolute inset-0 w-full h-full pointer-events-none"
+                    className="absolute inset-0 w-full h-full pointer-events-none select-none"
                     onLoad={() => {
                       setFrameReady(true);
                       redraw();

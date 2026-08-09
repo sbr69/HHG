@@ -22,6 +22,9 @@ export type BadgeData = {
   photo: CanvasImageSource | null;
   photoW: number;
   photoH: number;
+  zoom?: number;
+  offsetX?: number;
+  offsetY?: number;
 };
 
 /** Native size of the frame illustration. */
@@ -144,11 +147,17 @@ function drawCover(
   y: number,
   w: number,
   h: number,
+  zoom = 1,
+  offsetX = 0,
+  offsetY = 0,
 ) {
-  const scale = Math.max(w / iw, h / ih);
+  const baseScale = Math.max(w / iw, h / ih);
+  const scale = baseScale * zoom;
   const dw = iw * scale;
   const dh = ih * scale;
-  ctx.drawImage(img, x + (w - dw) / 2, y + (h - dh) * 0.3, dw, dh);
+  const cx = x + (w - dw) / 2 + offsetX;
+  const cy = y + (h - dh) * 0.3 + offsetY;
+  ctx.drawImage(img, cx, cy, dw, dh);
 }
 
 export function renderBadge(canvas: HTMLCanvasElement, d: BadgeData, scale = 1) {
@@ -175,7 +184,19 @@ export function renderBadge(canvas: HTMLCanvasElement, d: BadgeData, scale = 1) 
   if (d.photo) {
     ctx.fillStyle = "#131318";
     ctx.fillRect(px, py, pw, ph);
-    drawCover(ctx, d.photo, d.photoW, d.photoH, px, py, pw, ph);
+    drawCover(
+      ctx,
+      d.photo,
+      d.photoW,
+      d.photoH,
+      px,
+      py,
+      pw,
+      ph,
+      d.zoom ?? 1,
+      d.offsetX ?? 0,
+      d.offsetY ?? 0,
+    );
   } else {
     ctx.fillStyle = CREAM;
     ctx.fillRect(px, py, pw, ph);
@@ -208,9 +229,9 @@ export function renderBadge(canvas: HTMLCanvasElement, d: BadgeData, scale = 1) 
 
   ctx.textBaseline = "alphabetic";
 
-  // Craft (stack) above full name in yellow (Golden Ratio 28px scale)
+  // Craft (stack) above full name in black (Golden Ratio 28px scale)
   ctx.font = SANS(28, 600);
-  ctx.fillStyle = "rgb(255, 200, 89)";
+  ctx.fillStyle = "#000000";
   const stack = (d.stack || "Builder").trim().toUpperCase();
   fitText(ctx, stack, iw - 40, 28, (s) => SANS(s, 600), 16);
   letterSpaced(ctx, stack, ix, baseline - 172, 4.5);
